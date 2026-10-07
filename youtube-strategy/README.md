@@ -16,8 +16,8 @@
 ## 読む順番
 
 1. `docs/CHANNEL_STRATEGY.md` — 矛盾の洗い出し・戦略への批判・初期3本の順番の再検討・ユーザー判断待ち事項
-2. `docs/LONG_TERM_STRATEGY.md` — **計画 v2**（最初の100日のスケジュール・判断ゲート・4本目以降の分岐）
-3. `videos/001-stardew/` — v2 の1本目の企画書（v1 の Create・Factorio・CS2 は `videos/_archive-v1/` に保管）
+2. `docs/LONG_TERM_STRATEGY.md` — **計画 v3**（シリーズの型・最初の100日・判断ゲート・4本目以降）
+3. `videos/001-cities1/` — 1本目の企画書（候補は `videos/_candidates/`、v1 は `videos/_archive-v1/`）
 4. `research/GAME_CANDIDATES.md` — ゲームごとの判定（やる / テストする / 今はやらない）
 
 ## ディレクトリ

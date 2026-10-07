@@ -1,6 +1,6 @@
 # 003 Cities: Skylines II（暫定）
 
-ステータス: **未確定**。G2（001公開から30日）で CS2 か Satisfactory かを決める。判断理由は `docs/CHANNEL_STRATEGY.md` §4。
+ステータス: **保留**（初期3本を再設計中。`docs/CHANNEL_STRATEGY.md` §8）。G2（001公開から30日）で CS2 か Satisfactory かを決める。判断理由は `docs/CHANNEL_STRATEGY.md` §4。
 
 ## 一文企画（CS2 案）
 

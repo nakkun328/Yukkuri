@@ -26,7 +26,16 @@
 - 試算: 60分動画の平均視聴時間を15分と仮定すると、4,000時間 ≒ **1.6万回再生**（参考例は約1時間半の動画で平均約25分。E12）。参考例は100日で34.6万回なので、同じ水準なら届く。ただし参考例は経験者の支援つき（`COMPETITORS.md` S-01）
 - 週12時間・1本4〜5週なら、1月末までに出せるのは**3本前後**。1本目を11月中に出せるかが分かれ目
 - **注意**: 期限に合わせて質を落とすのは本末転倒（資産性が目的）。間に合わなくても、2月以降は8,000時間が必要になるだけで、長尺の総再生時間で稼ぐ戦略はむしろ有利になる
-- 既存参加者の維持条件（直近1年1,000時間など）を報じた記事もあるが、出典間で記述が揃っていない（要確認）
+- 既存参加者の維持条件: 2027-01-31までに新規約に同意し、「年間1,000時間」「ショート90日100万回」「90日ごとに長尺2本またはショート5本」のいずれかを満たす（国内報道で一致）。こちらの投稿ペース（4〜5週に1本＝90日で2〜3本）なら満たせる
+- 500人の早期アクセス枠（メンバーシップ・Super Thanks 等。登録者500人＋総再生3,000時間 など）は**変更なし**
+- **不明点**: 1月末までに条件を満たしても、審査中のまま2月1日を迎えた場合に旧条件が適用されるかは未確認。参考例では「承認は基本1か月後」と言われており（参考例は例外的に2日）、**1月上旬までに申請できる状態**を目安にする
+- 参考動画の「最低3本のアップロード」は、公式の新規参加条件として確認できていない（早期アクセス枠の条件の可能性。要確認）
+
+### E3 の詳細（2026-10-07 追加確認）
+
+- 発表: 2026年8月（国内では8/11前後に ITmedia・Impress Watch・電ファミニコゲーマー・GameBusiness.jp などが報道）
+- YouTube 公式ページはこの環境から開けず、**一次情報は未確認**。報道各社の内容は一致している
+- 長尺で試算: 8,000時間 ≒ 平均視聴15分なら3.2万回、平均25分（参考例のStardew）なら約1.9万回。参考例の Stardew は1本で3.7万時間なので、**長尺で1本当たれば新条件でも届く**。条件の倍増はショート中心や小規模チャンネルほど厳しい
 
 ## 結論（尺について）
 
@@ -41,7 +50,7 @@
 - 視聴時間と再生数の関係（学術）: https://arxiv.org/abs/1603.08308
 - 日本のYouTube視聴（長尺が約70%、21時がピーク）: https://avia.org/youtube-commands-more-than-65-of-japans-digital-vod-hours-with-news-and-baseball-leading-what-the-country-watches/
 - TV視聴の割合: https://www.emarketer.com/content/youtube-ctv-growth-pricing-edge-boost-2026-streaming-outlook ／ https://www.advanced-television.com/2026/06/03/report-youtube-overtakes-netflix-in-daily-viewing-time
-- YPP 2027年の条件変更: https://www.business-standard.com/technology/tech-news/technology-tech-news-youtube-partner-program-monetisation-rules-2027-watch-hours-shorts-views-126081100708_1.html ／ https://www.androidheadlines.com/2026/08/youtube-doubles-partner-program-monetization-requirements-2027-update.html ／ https://www.digitaltoday.co.kr/jp/view/91483/youtube-to-raise-bar-for-creator-monetisation
+- YPP 2027年の条件変更: https://www.itmedia.co.jp/news/article/2608/11/2000000495/ ／ https://www.watch.impress.co.jp/docs/news/2132136.html ／ https://www.gamebusiness.jp/article/2026/08/12/27672.html ／ https://news.denfaminicogamer.jp/news/2608112g ／ https://tbreak.com/youtube-partner-program-8000-watch-hours/ ／ https://www.business-standard.com/technology/tech-news/technology-tech-news-youtube-partner-program-monetisation-rules-2027-watch-hours-shorts-views-126081100708_1.html ／ https://www.androidheadlines.com/2026/08/youtube-doubles-partner-program-monetization-requirements-2027-update.html ／ https://www.digitaltoday.co.kr/jp/view/91483/youtube-to-raise-bar-for-creator-monetisation
 - 中間広告8分: https://www.tubefilter.com/2020/07/07/youtube-lowering-minimum-video-length-mid-roll-ads/
 - 編集時間の目安: https://town.crowdworks.jp/articles/video-editing-takes-too-long
 - E6〜E12 の参考例: https://youtu.be/PHRqkara4eU（ユーザー提供の文字起こし）

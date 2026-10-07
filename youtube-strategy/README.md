@@ -8,7 +8,7 @@
 ## 現在地（2026-10-07）
 
 - Phase 1（思想確定）: **進行中** — 矛盾・弱点の洗い出しと戦略批判まで完了。未決事項は `docs/CHANNEL_STRATEGY.md` §3 の「ユーザー判断待ち」
-- Phase 2（市場調査）: 初期メモのみ。データ取得に制約あり（`research/GAME_MARKET.md` 冒頭参照）
+- Phase 2（市場調査）: 初期メモのみ。データ取得に制約あり（原因と解決策は `research/DATA_ACCESS.md`）
 - Phase 3（競合分析）: 未着手（YouTubeデータにアクセスできていない）
 - Phase 4（初期3本の設計）: 叩き台完成 → `videos/00x-*/`
 - Phase 5 以降: 未着手

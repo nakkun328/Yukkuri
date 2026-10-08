@@ -13,7 +13,7 @@ const outFile = path.join(root, 'strategy.html');
 const groups = [
   { title: 'はじめに', match: (p) => p === 'README.md' },
   { title: '方針', match: (p) => p.startsWith('docs/'),
-    order: ['LONG_TERM_STRATEGY', 'CHANNEL_STRATEGY', 'VIDEO_FORMAT', 'ORIGINALITY'] },
+    order: ['PRODUCTION_GUIDE', 'LONG_TERM_STRATEGY', 'CHANNEL_STRATEGY', 'VIDEO_FORMAT', 'ORIGINALITY'] },
   { title: '動画', match: (p) => p.startsWith('videos/') && !p.includes('/_') },
   { title: '調査', match: (p) => p.startsWith('research/'),
     order: ['YUKKURI_TONE', 'COMPETITORS', 'EVIDENCE', 'RIGHTS', 'GAME_CANDIDATES'] },

@@ -20,6 +20,7 @@
 3. `videos/001-cities2/` — 1本目の企画書（候補は `videos/_candidates/`、v1 は `videos/_archive-v1/`）
 4. `research/GAME_CANDIDATES.md` — ゲームごとの判定（やる / テストする / 今はやらない）
 5. `docs/ORIGINALITY.md` — **パクリ防止ルール**（使用禁止リスト・公開前チェック）
+6. `docs/PRODUCTION_GUIDE.md` — **制作ガイド**（ゆっくり実況の特徴・台本とセリフ打ちの注意・録画中のメモ・公開前チェック）。制作中はこれだけ見ればよい
 
 ## ディレクトリ
 

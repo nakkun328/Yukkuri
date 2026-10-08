@@ -1,0 +1,4829 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゆっくり実況 戦略ノート</title>
+<style>
+:root {
+  --bg: #fbfaf7; --panel: #f2efe8; --text: #24221f; --muted: #6d675e; --line: #ddd7cc;
+  --accent: #b4462f; --accent-soft: #f6e3dc; --code: #ece8df; --head: #f0ece4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b1a18; --panel: #232220; --text: #e9e5dd; --muted: #a39d92; --line: #3a3733;
+    --accent: #e98a6f; --accent-soft: #3a2a24; --code: #2c2a27; --head: #2a2825;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1b1a18; --panel: #232220; --text: #e9e5dd; --muted: #a39d92; --line: #3a3733;
+  --accent: #e98a6f; --accent-soft: #3a2a24; --code: #2c2a27; --head: #2a2825;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font: 16px/1.8 "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  display: grid; grid-template-columns: 300px minmax(0, 1fr); min-height: 100vh;
+}
+nav {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--panel); border-right: 1px solid var(--line); padding: 20px 14px 40px;
+}
+nav h1 { font-size: 15px; margin: 0 6px 4px; }
+nav .built { font-size: 12px; color: var(--muted); margin: 0 6px 14px; }
+nav input {
+  width: 100%; padding: 8px 10px; margin-bottom: 12px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; font-size: 14px;
+}
+nav details { margin-bottom: 8px; }
+nav summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--muted); padding: 4px 6px; }
+nav ul { list-style: none; margin: 2px 0 0; padding: 0; }
+nav li a {
+  display: block; padding: 6px 8px; border-radius: 8px; color: var(--text); text-decoration: none; line-height: 1.4;
+}
+nav li a:hover { background: var(--accent-soft); }
+nav li a.active { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+nav .t { display: block; font-size: 14px; }
+nav .p { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+main { padding: 32px 40px 80px; min-width: 0; }
+article { max-width: 920px; margin: 0 auto; }
+.src { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+h1, h2, h3, h4 { line-height: 1.4; scroll-margin-top: 16px; }
+h1 { font-size: 28px; margin: 0 0 20px; }
+h2 { font-size: 21px; margin: 40px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+h3 { font-size: 18px; margin: 28px 0 8px; }
+a { color: var(--accent); }
+strong { color: var(--accent); }
+code { background: var(--code); padding: 1px 6px; border-radius: 5px; font-size: 0.88em; }
+a.doclink { text-decoration: none; }
+a.doclink code { border: 1px solid var(--accent); }
+pre { background: var(--code); padding: 14px; border-radius: 8px; overflow-x: auto; }
+pre code { padding: 0; background: none; }
+blockquote { margin: 16px 0; padding: 8px 16px; border-left: 4px solid var(--accent); background: var(--panel); border-radius: 0 8px 8px 0; }
+blockquote p { margin: 4px 0; }
+.table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; line-height: 1.6; }
+th, td { padding: 8px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { background: var(--head); white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+li { margin: 2px 0; }
+hr { border: none; border-top: 1px solid var(--line); margin: 32px 0; }
+.menu-btn { display: none; }
+@media (max-width: 800px) {
+  body { display: block; }
+  .menu-btn {
+    display: flex; align-items: center; gap: 8px; position: sticky; top: 0; z-index: 11;
+    width: 100%; height: 48px; padding: 0 16px; border: none; border-bottom: 1px solid var(--line);
+    background: var(--panel); color: var(--text); font: inherit; font-size: 14px; text-align: left;
+  }
+  .menu-btn .cur { color: var(--muted); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  nav {
+    position: fixed; top: 48px; bottom: 0; left: 0; width: 82%; height: auto; z-index: 10;
+    transform: translateX(-100%); transition: transform .2s;
+  }
+  body.menu-open nav { transform: none; box-shadow: 0 0 0 100vmax rgba(0,0,0,.35); }
+  main { padding: 20px 16px 60px; }
+  h1, h2, h3, h4 { scroll-margin-top: 60px; }
+  h1 { font-size: 23px; }
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" type="button" aria-label="目次を開く"><span>☰ 目次</span><span class="cur"></span></button>
+<nav>
+  <h1>ゆっくり実況 戦略ノート</h1>
+  <div class="built">生成: 2026/10/8 18:50:00（markdown-it）</div>
+  <input type="search" placeholder="文書を絞り込む" aria-label="文書を絞り込む">
+<details open><summary>はじめに</summary><ul><li><a href="#d-readme" data-doc="d-readme"><span class="t">youtube-strategy</span><span class="p">README.md</span></a></li></ul></details>
+<details open><summary>方針</summary><ul><li><a href="#d-docs-long-term-strategy" data-doc="d-docs-long-term-strategy"><span class="t">長期戦略・計画 v3</span><span class="p">docs/LONG_TERM_STRATEGY.md</span></a></li><li><a href="#d-docs-channel-strategy" data-doc="d-docs-channel-strategy"><span class="t">チャンネル戦略（批判的レビュー込み）</span><span class="p">docs/CHANNEL_STRATEGY.md</span></a></li><li><a href="#d-docs-video-format" data-doc="d-docs-video-format"><span class="t">動画フォーマット（視聴体験を見える形で統一する）</span><span class="p">docs/VIDEO_FORMAT.md</span></a></li><li><a href="#d-docs-originality" data-doc="d-docs-originality"><span class="t">パクリ防止ルール</span><span class="p">docs/ORIGINALITY.md</span></a></li><li><a href="#d-docs-audience" data-doc="d-docs-audience"><span class="t">想定視聴者</span><span class="p">docs/AUDIENCE.md</span></a></li><li><a href="#d-docs-content-pillars" data-doc="d-docs-content-pillars"><span class="t">コンテンツの柱</span><span class="p">docs/CONTENT_PILLARS.md</span></a></li></ul></details>
+<details open><summary>動画</summary><ul><li><a href="#d-videos-001-cities2-idea" data-doc="d-videos-001-cities2-idea"><span class="t">001 Cities: Skylines II — 計画 v3 の1本目</span><span class="p">videos/001-cities2/idea.md</span></a></li><li><a href="#d-videos-001-cities2-postmortem" data-doc="d-videos-001-cities2-postmortem"><span class="t">001 事後分析（公開後に記入）</span><span class="p">videos/001-cities2/postmortem.md</span></a></li><li><a href="#d-videos-001-cities2-script-sample" data-doc="d-videos-001-cities2-script-sample"><span class="t">001 台本サンプル v5（雰囲気確認用）</span><span class="p">videos/001-cities2/script-sample.md</span></a></li></ul></details>
+<details open><summary>調査</summary><ul><li><a href="#d-research-yukkuri-tone" data-doc="d-research-yukkuri-tone"><span class="t">ゆっくり実況の「ノリ」の分析</span><span class="p">research/YUKKURI_TONE.md</span></a></li><li><a href="#d-research-competitors" data-doc="d-research-competitors"><span class="t">競合分析</span><span class="p">research/COMPETITORS.md</span></a></li><li><a href="#d-research-evidence" data-doc="d-research-evidence"><span class="t">根拠の検証（主張 → データ → 判定）</span><span class="p">research/EVIDENCE.md</span></a></li><li><a href="#d-research-rights" data-doc="d-research-rights"><span class="t">権利・ライセンスの確認</span><span class="p">research/RIGHTS.md</span></a></li><li><a href="#d-research-game-candidates" data-doc="d-research-game-candidates"><span class="t">ゲーム候補の判定</span><span class="p">research/GAME_CANDIDATES.md</span></a></li><li><a href="#d-research-data-access" data-doc="d-research-data-access"><span class="t">データ取得の制約と解決策</span><span class="p">research/DATA_ACCESS.md</span></a></li><li><a href="#d-research-game-market" data-doc="d-research-game-market"><span class="t">ゲーム市場データ</span><span class="p">research/GAME_MARKET.md</span></a></li><li><a href="#d-research-trend-watch" data-doc="d-research-trend-watch"><span class="t">トレンド・ウォッチ</span><span class="p">research/TREND_WATCH.md</span></a></li></ul></details>
+<details open><summary>実験</summary><ul><li><a href="#d-experiments-hypotheses" data-doc="d-experiments-hypotheses"><span class="t">仮説ログ</span><span class="p">experiments/HYPOTHESES.md</span></a></li><li><a href="#d-experiments-results" data-doc="d-experiments-results"><span class="t">結果ログ</span><span class="p">experiments/RESULTS.md</span></a></li></ul></details>
+<details open><summary>エージェント</summary><ul><li><a href="#d-agent-data-model" data-doc="d-agent-data-model"><span class="t">データモデル（叩き台）</span><span class="p">agent/DATA_MODEL.md</span></a></li><li><a href="#d-agent-requirements" data-doc="d-agent-requirements"><span class="t">YouTube戦略エージェント 要件</span><span class="p">agent/REQUIREMENTS.md</span></a></li><li><a href="#d-agent-roadmap" data-doc="d-agent-roadmap"><span class="t">エージェント ロードマップ</span><span class="p">agent/ROADMAP.md</span></a></li></ul></details>
+<details open><summary>候補</summary><ul><li><a href="#d-videos-candidates-stardew-idea" data-doc="d-videos-candidates-stardew-idea"><span class="t">001 Stardew Valley（計画 v2 の1本目）</span><span class="p">videos/_candidates/stardew/idea.md</span></a></li><li><a href="#d-videos-candidates-stardew-postmortem" data-doc="d-videos-candidates-stardew-postmortem"><span class="t">001 事後分析（公開後に記入）</span><span class="p">videos/_candidates/stardew/postmortem.md</span></a></li></ul></details>
+<details><summary>アーカイブ（v1）</summary><ul><li><a href="#d-videos-archive-v1-001-create-idea" data-doc="d-videos-archive-v1-001-create-idea"><span class="t">001 Minecraft Create</span><span class="p">videos/_archive-v1/001-create/idea.md</span></a></li><li><a href="#d-videos-archive-v1-001-create-plan" data-doc="d-videos-archive-v1-001-create-plan"><span class="t">001 動画構成・撮影計画</span><span class="p">videos/_archive-v1/001-create/plan.md</span></a></li><li><a href="#d-videos-archive-v1-001-create-postmortem" data-doc="d-videos-archive-v1-001-create-postmortem"><span class="t">001 事後分析（公開後に記入）</span><span class="p">videos/_archive-v1/001-create/postmortem.md</span></a></li><li><a href="#d-videos-archive-v1-001-create-research" data-doc="d-videos-archive-v1-001-create-research"><span class="t">001 調査メモ</span><span class="p">videos/_archive-v1/001-create/research.md</span></a></li><li><a href="#d-videos-archive-v1-001-create-title-thumbnail" data-doc="d-videos-archive-v1-001-create-title-thumbnail"><span class="t">001 タイトル・サムネ案</span><span class="p">videos/_archive-v1/001-create/title-thumbnail.md</span></a></li><li><a href="#d-videos-archive-v1-002-factorio-idea" data-doc="d-videos-archive-v1-002-factorio-idea"><span class="t">002 Factorio</span><span class="p">videos/_archive-v1/002-factorio/idea.md</span></a></li><li><a href="#d-videos-archive-v1-002-factorio-plan" data-doc="d-videos-archive-v1-002-factorio-plan"><span class="t">002 動画構成・撮影計画</span><span class="p">videos/_archive-v1/002-factorio/plan.md</span></a></li><li><a href="#d-videos-archive-v1-002-factorio-postmortem" data-doc="d-videos-archive-v1-002-factorio-postmortem"><span class="t">002 事後分析（公開後に記入）</span><span class="p">videos/_archive-v1/002-factorio/postmortem.md</span></a></li><li><a href="#d-videos-archive-v1-002-factorio-research" data-doc="d-videos-archive-v1-002-factorio-research"><span class="t">002 調査メモ</span><span class="p">videos/_archive-v1/002-factorio/research.md</span></a></li><li><a href="#d-videos-archive-v1-002-factorio-title-thumbnail" data-doc="d-videos-archive-v1-002-factorio-title-thumbnail"><span class="t">002 タイトル・サムネ案</span><span class="p">videos/_archive-v1/002-factorio/title-thumbnail.md</span></a></li><li><a href="#d-videos-archive-v1-003-cities2-idea" data-doc="d-videos-archive-v1-003-cities2-idea"><span class="t">003 Cities: Skylines II（暫定）</span><span class="p">videos/_archive-v1/003-cities2/idea.md</span></a></li><li><a href="#d-videos-archive-v1-003-cities2-plan" data-doc="d-videos-archive-v1-003-cities2-plan"><span class="t">003 動画構成・撮影計画（暫定）</span><span class="p">videos/_archive-v1/003-cities2/plan.md</span></a></li><li><a href="#d-videos-archive-v1-003-cities2-postmortem" data-doc="d-videos-archive-v1-003-cities2-postmortem"><span class="t">003 事後分析（公開後に記入）</span><span class="p">videos/_archive-v1/003-cities2/postmortem.md</span></a></li><li><a href="#d-videos-archive-v1-003-cities2-research" data-doc="d-videos-archive-v1-003-cities2-research"><span class="t">003 調査メモ（CS2）</span><span class="p">videos/_archive-v1/003-cities2/research.md</span></a></li><li><a href="#d-videos-archive-v1-003-cities2-title-thumbnail" data-doc="d-videos-archive-v1-003-cities2-title-thumbnail"><span class="t">003 タイトル・サムネ案（CS2 暫定）</span><span class="p">videos/_archive-v1/003-cities2/title-thumbnail.md</span></a></li></ul></details>
+</nav>
+<main>
+<article id="d-readme" hidden><div class="src">README.md</div>
+<h1 id="d-readme--youtube-strategy">youtube-strategy</h1>
+<p>ゆっくり実況・YouTube資産形成プロジェクトの管理ディレクトリ。<br>
+元の指示は リポジトリ直下の <code>指示.md</code>（マスタープロンプト）。</p>
+<p><strong>最重要目標: 数年後も再生され続ける動画資産を積み上げる。動画を作ること自体は目的ではない。</strong></p>
+<h2 id="d-readme--現在地2026-10-07">現在地（2026-10-07）</h2>
+<ul>
+<li>Phase 1（思想確定）: <strong>進行中</strong> — 矛盾・弱点の洗い出しと戦略批判まで完了。未決事項は <a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §3 の「ユーザー判断待ち」</li>
+<li>Phase 2（市場調査）: 初期メモのみ。データ取得に制約あり（原因と解決策は <a class="doclink" href="#d-research-data-access"><code>research/DATA_ACCESS.md</code></a>）</li>
+<li>Phase 3（競合分析）: 未着手（YouTubeデータにアクセスできていない）</li>
+<li>Phase 4（初期3本の設計）: 叩き台完成 → <code>videos/00x-*/</code></li>
+<li>Phase 5 以降: 未着手</li>
+</ul>
+<h2 id="d-readme--読む順番">読む順番</h2>
+<ol>
+<li><a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> — 矛盾の洗い出し・戦略への批判・初期3本の順番の再検討・ユーザー判断待ち事項</li>
+<li><a class="doclink" href="#d-docs-long-term-strategy"><code>docs/LONG_TERM_STRATEGY.md</code></a> — <strong>計画 v3</strong>（シリーズの型・最初の100日・判断ゲート・4本目以降）</li>
+<li><a class="doclink" href="#d-videos-001-cities2-idea"><code>videos/001-cities2/</code></a> — 1本目の企画書（候補は <code>videos/_candidates/</code>、v1 は <code>videos/_archive-v1/</code>）</li>
+<li><a class="doclink" href="#d-research-game-candidates"><code>research/GAME_CANDIDATES.md</code></a> — ゲームごとの判定（やる / テストする / 今はやらない）</li>
+<li><a class="doclink" href="#d-docs-originality"><code>docs/ORIGINALITY.md</code></a> — <strong>パクリ防止ルール</strong>（使用禁止リスト・公開前チェック）</li>
+</ol>
+<h2 id="d-readme--ディレクトリ">ディレクトリ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>パス</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docs/</code></td>
+<td>チャンネル戦略・視聴者像・柱・動画フォーマット・長期戦略</td>
+</tr>
+<tr>
+<td><code>research/</code></td>
+<td>市場・競合・トレンド・ゲーム候補</td>
+</tr>
+<tr>
+<td><code>videos/</code></td>
+<td>動画ごとの企画・調査・計画・タイトル/サムネ・事後分析</td>
+</tr>
+<tr>
+<td><code>experiments/</code></td>
+<td>仮説の記録と結果（知識ベースの本体）</td>
+</tr>
+<tr>
+<td><code>agent/</code></td>
+<td>将来のYouTube戦略エージェントの要件・データモデル・ロードマップ</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-readme--運用ルール">運用ルール</h2>
+<ul>
+<li>ゲーム名・企画を送られたら、<code>指示.md</code> §28 の12項目で評価し、最後に <strong>やる / テストする / 今はやらない</strong> を出す</li>
+<li>数値は必ず出典と取得日を書く。取れていない数値は「未取得」と書き、推測で埋めない</li>
+<li>投稿前に必ず <a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> に「なぜ伸びると思ったか」を書く</li>
+<li>初動だけで成否を判断しない。24時間 / 7日 / 30日 / 90日 / 180日 / 365日で見る</li>
+</ul>
+<h2 id="d-readme--html-で読む">HTML で読む</h2>
+<p><code>strategy.html</code> をブラウザで開くと、全文書を目次つきで読める（スマホ表示・ダークモード対応）。Markdown を直したら作り直す:</p>
+<pre><code>cd tools/build-html &amp;&amp; npm install &amp;&amp; npm run build
+</code></pre>
+</article>
+<article id="d-agent-data-model" hidden><div class="src">agent/DATA_MODEL.md</div>
+<h1 id="d-agent-data-model--データモデル叩き台">データモデル（叩き台）</h1>
+<h2 id="d-agent-data-model--エンティティ">エンティティ</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>エンティティ</th>
+<th>主な項目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Game</td>
+<td>id、名前、発売日、分類（一等地/安定収益/成長株/投機/イベント）、工業要素の強さ、一般視聴者への分かりやすさ</td>
+</tr>
+<tr>
+<td>GameSnapshot</td>
+<td>game_id、日付、Steam同接（平均・ピーク）、Trends指数、Reddit/Discord人口、取得元</td>
+</tr>
+<tr>
+<td>CompetitorVideo</td>
+<td>url、チャンネル、登録者数、公開日、再生数（時点別）、尺、企画フォーマット、タイトル型、サムネ型、流入推定</td>
+</tr>
+<tr>
+<td>VideoIdea</td>
+<td>id、game_id、フォーマット、一文企画、終了条件、想定プレイ時間、想定尺、評価スコア、判定</td>
+</tr>
+<tr>
+<td>Video</td>
+<td>idea_id、公開日、実績プレイ時間、制作時間、タイトル・サムネの版、仮説ID</td>
+</tr>
+<tr>
+<td>VideoMetricSnapshot</td>
+<td>video_id、経過日数（1/7/30/90/180/365）、再生、インプレッション、CTR、維持率、平均視聴時間、流入元別、新規率</td>
+</tr>
+<tr>
+<td>CrossViewing</td>
+<td>video_a、video_b、日付、A視聴者のBを見た割合</td>
+</tr>
+<tr>
+<td>Hypothesis</td>
+<td>id、対象（戦略/動画）、内容、根拠、反証条件、結果、正誤</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-agent-data-model--関係">関係</h2>
+<p>Game 1─N GameSnapshot / VideoIdea、VideoIdea 1─1 Video、Video 1─N VideoMetricSnapshot、Video N─N Video（CrossViewing）、Hypothesis N─N Video。</p>
+<h2 id="d-agent-data-model--ストレージ">ストレージ</h2>
+<p>当面はMarkdown＋CSV（<code>research/</code>・<code>videos/</code>・<code>experiments/</code>）。データ量が増えてからSQLite等に移行。</p>
+</article>
+<article id="d-agent-requirements" hidden><div class="src">agent/REQUIREMENTS.md</div>
+<h1 id="d-agent-requirements--youtube戦略エージェント-要件">YouTube戦略エージェント 要件</h1>
+<p>ステータス: 叩き台。実装は Phase 10（十分な実データが集まってから）。</p>
+<h2 id="d-agent-requirements--目的">目的</h2>
+<p>「次何撮ればいい？」に、市場・過去動画・チャンネル分析・ゲーム人口・制作コスト・好みを根拠に回答する。</p>
+<h2 id="d-agent-requirements--ループ指示md-18">ループ（指示.md §18）</h2>
+<p>市場調査 → ゲーム候補発見 → 競合動画分析 → 企画仮説作成 → 企画評価 → タイトル・サムネ案 → 撮影計画 → 投稿 → データ分析 → 仮説更新 → 次動画決定 → 市場調査へ</p>
+<h2 id="d-agent-requirements--必要な入力データ源">必要な入力（データ源）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>データ</th>
+<th>取得方法の候補</th>
+<th>現状</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steam 同時接続・過去推移</td>
+<td>Steam Web API／SteamDB 等</td>
+<td>❌ このコンテナからは未接続</td>
+</tr>
+<tr>
+<td>YouTube 競合動画（再生・登録者・公開日）</td>
+<td>YouTube Data API v3</td>
+<td>❌ キー未用意</td>
+</tr>
+<tr>
+<td>自チャンネル分析</td>
+<td>YouTube Analytics API／Studioエクスポート</td>
+<td>公開後</td>
+</tr>
+<tr>
+<td>検索需要</td>
+<td>Google Trends／YouTubeサジェスト</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>コミュニティ人口</td>
+<td>Reddit・Discord</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-agent-requirements--出力">出力</h2>
+<ul>
+<li>ゲーム評価（指示.md §28 の12項目＋やる／テストする／今はやらない）</li>
+<li>企画の資産価値スコア（式は <a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> で「分かりやすさ」を追加した版を継続）</li>
+<li>次動画の推奨と根拠（例: クロス視聴率・競合の少なさ・類似動画の長期再生）</li>
+</ul>
+<h2 id="d-agent-requirements--守るべき原則">守るべき原則</h2>
+<ul>
+<li>数値は出典と取得日つき。未取得は未取得と書く（推測で埋めない）</li>
+<li>肯定しない。反対意見・撤退基準を必ず付ける</li>
+<li>初動だけで判断しない（30/90/180/365日）</li>
+</ul>
+</article>
+<article id="d-agent-roadmap" hidden><div class="src">agent/ROADMAP.md</div>
+<h1 id="d-agent-roadmap--エージェント-ロードマップ">エージェント ロードマップ</h1>
+<p>指示.md Phase 10 まで実装しない。それまでは<strong>人（私）がループを手で回し、データの形を決める</strong>段階。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>段階</th>
+<th>内容</th>
+<th>前提</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0（現在）</td>
+<td>Markdown管理。評価基準・フォーマットを固める</td>
+<td>—</td>
+</tr>
+<tr>
+<td>1</td>
+<td>データ取得スクリプト（Steam同接・YouTube競合）を作る</td>
+<td>APIキー／アクセスの用意</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ゲーム候補の自動スコアリング（<a class="doclink" href="#d-research-game-candidates"><code>research/GAME_CANDIDATES.md</code></a> の更新）</td>
+<td>段階1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>自チャンネルの分析レポート（30/90/180/365日）</td>
+<td>001〜003 公開後</td>
+</tr>
+<tr>
+<td>4</td>
+<td>企画評価の自動化（資産価値モデルの重みを実データで更新）</td>
+<td>10本程度のデータ</td>
+</tr>
+<tr>
+<td>5</td>
+<td>「次何撮ればいい？」への回答生成</td>
+<td>段階2〜4</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-agent-roadmap--先に決めること">先に決めること</h2>
+<ul>
+<li>データ取得の手段（APIキー・手動エクスポート）</li>
+<li>実行環境（このリポジトリ内のスクリプトか、定期実行か）</li>
+</ul>
+</article>
+<article id="d-docs-audience" hidden><div class="src">docs/AUDIENCE.md</div>
+<h1 id="d-docs-audience--想定視聴者">想定視聴者</h1>
+<p>ステータス: <strong>すべて仮説</strong>。Phase 7（3本公開後）で実データから確定する。</p>
+<h2 id="d-docs-audience--仮説の視聴者層">仮説の視聴者層</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>層</th>
+<th>説明</th>
+<th>入口</th>
+<th>満たす欲求</th>
+<th>主なリスク</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. Minecraft 一般層</td>
+<td>Create を知らない。Minecraft の動画を見る</td>
+<td>001</td>
+<td>「何もない→巨大」「全自動」の快感</td>
+<td>工業の説明で離脱</td>
+</tr>
+<tr>
+<td>B. 自動化・工業ゲーム層</td>
+<td>Factorio/Satisfactory/Create のプレイヤー・視聴者</td>
+<td>001・002</td>
+<td>最適化・設計の面白さ、縛り、数字</td>
+<td>専門性が薄いと物足りない</td>
+</tr>
+<tr>
+<td>C. 発展・経営層</td>
+<td>都市開発・経営・ストラテジーが好き</td>
+<td>003</td>
+<td>Before/After、発展の快感</td>
+<td>A/B と重ならない可能性（F1）</td>
+</tr>
+<tr>
+<td>D. ゆっくり実況の視聴者</td>
+<td>形式（掛け合い・編集）が好きでゲームは問わない</td>
+<td>全動画</td>
+<td>安心して見られる形式</td>
+<td>ゲームごとの興味に左右される</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-docs-audience--確定していないこと">確定していないこと</h2>
+<ul>
+<li>日本語圏のみか（<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §3）</li>
+<li>年齢・視聴時間帯・視聴デバイス（テレビ視聴が多い長尺では重要）</li>
+<li>A〜D の重なり具合（001/002/003 公開後の「他の動画を視聴した視聴者」で測る）</li>
+</ul>
+<h2 id="d-docs-audience--確認する指標">確認する指標</h2>
+<ul>
+<li>新規／リピーター比率、流入元、他の動画への移動（A→002、B→003 など）</li>
+<li>層別の維持率（冒頭と中盤で落ちる層が違うか）</li>
+</ul>
+</article>
+<article id="d-docs-channel-strategy" hidden><div class="src">docs/CHANNEL_STRATEGY.md</div>
+<h1 id="d-docs-channel-strategy--チャンネル戦略批判的レビュー込み">チャンネル戦略（批判的レビュー込み）</h1>
+<p>最終更新: 2026-10-07 / ステータス: 叩き台。<strong>§3 のユーザー判断待ち事項が埋まるまで確定しない。</strong></p>
+<h2 id="d-docs-channel-strategy--0-現在の仮説ユーザー案">0. 現在の仮説（ユーザー案）</h2>
+<blockquote>
+<p>複数ゲームを扱うが、「自動化・最適化・巨大化・発展」という視聴体験を統一する。<br>
+工業は目的ではなく企画を成立させる道具。売るのは「何を実現したか」。</p>
+</blockquote>
+<h2 id="d-docs-channel-strategy--1-矛盾弱点未決点の洗い出しstep-1">1. 矛盾・弱点・未決点の洗い出し（Step 1）</h2>
+<h3 id="d-docs-channel-strategy--11-思想どうしの緊張矛盾">1.1 思想どうしの緊張・矛盾</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>内容</th>
+<th>影響</th>
+<th>対応方針</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>「ゲームではなく視聴体験を統一」するが、視聴者はチャンネルを<strong>ゲームかジャンル</strong>で覚える。体験の統一は視聴者側から見えにくい</td>
+<td>3本が3つの別視聴者に届き、誰も次の動画に移動しない</td>
+<td>体験を<strong>見える形で統一</strong>する（シリーズ名・タイトル型・サムネ型・冒頭構成を固定。<a class="doclink" href="#d-docs-video-format"><code>docs/VIDEO_FORMAT.md</code></a>）</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>「長期の資産性」と「初期3本で方向性を判断」が時間軸で衝突。資産動画は30〜365日で評価するのに、3本撮り終える頃には1本目のデータが未成熟</td>
+<td>判断が早すぎる／3本目が1本目の結果を反映できない</td>
+<td><strong>判断ゲート</strong>を設ける（<a class="doclink" href="#d-docs-long-term-strategy"><code>docs/LONG_TERM_STRATEGY.md</code></a>）。3本目の中身は1本目の30日データを見てから確定</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>「資産ネットワーク（動画が互いに再生を送り合う）」を目指すのに、初期3本が3ゲームに分散。ネットワークは<strong>同じ客層の動画が複数</strong>ないと成立しない</td>
+<td>3本ではネットワークとは呼べない（最低でも同クラスタ5〜10本が必要）</td>
+<td>初期3本は「検証用」と割り切る。勝ち筋が出たらそのクラスタを厚くする（Phase 8）</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>「工業系は説明が難しい」と認識しつつ、3本中2本（Create/Factorio）が最も説明が難しい部類</td>
+<td>維持率が落ちる／離脱が多い</td>
+<td>前半は説明ゼロでも楽しめる設計（成長・巨大化の見た目）、工業の深掘りは中盤以降に置く</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>「好みだけで決めない」が、初期3本の選定にユーザーの好み（工業）が強く効いている</td>
+<td>好みバイアス</td>
+<td>3本のうち<strong>少なくとも1本は好みより市場の根拠で選ぶ</strong>（案: §4 の順番再検討）</td>
+</tr>
+<tr>
+<td>C6</td>
+<td>「100時間の動画は危険」と言いつつ、1本目が30〜45時間、2本目25〜40時間。収益化前の新規チャンネルには十分重い</td>
+<td>検証サイクルが半年以上になる</td>
+<td>制作時間の上限と1本あたりの時間予算を決める（§3 の質問）</td>
+</tr>
+<tr>
+<td>C7</td>
+<td>資産価値モデル（指示.md §22）の式に**「新規視聴者への分かりやすさ」が入っていない**。評価軸（§21）にはあるのに式にはない</td>
+<td>説明が難しい工業ゲームが過大評価される</td>
+<td>式を修正（<a class="doclink" href="#d-research-game-candidates"><code>research/GAME_CANDIDATES.md</code></a> の採点では分かりやすさを乗数に追加して比較）</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--12-まだ決まっていない情報不足">1.2 まだ決まっていない（情報不足）</h3>
+<ul>
+<li>言語・市場（ゆっくり実況＝日本語圏前提でよいか。英語圏を狙わないのか）</li>
+<li>既存チャンネルの有無・登録者数・実績（ゼロからか）</li>
+<li>週あたりの制作時間（これで「年に何本作れるか」が決まる）</li>
+<li>収益目標・期間（「資産」の定義を数字で置くため）</li>
+<li>声の方針（ゆっくりボイス固定か、将来的に肉声を混ぜるか）</li>
+<li>既にプレイ済み・撮影済みの素材の有無（サンクコストも判断材料）</li>
+<li>具体的なゲーム環境（Createのパック/バージョン、FactorioのSpace Ageの有無、Cities II の PC スペック）</li>
+<li>失敗の撤退基準（何本・何か月試して数字が出なければ方向転換するか）</li>
+<li>「資産が積み上がった」とみなす成功の定義（例: 12か月後に1本あたり月X再生）</li>
+</ul>
+<h2 id="d-docs-channel-strategy--2-現在の仮説への批判step-2">2. 現在の仮説への批判（Step 2）</h2>
+<h3 id="d-docs-channel-strategy--21-良い点">2.1 良い点</h3>
+<ul>
+<li>工業好きという**自分の強み（制作の持続力・編集の熱量）**を活かせる</li>
+<li>「何を実現したか」を売る方針は、一般視聴者へのクリック理由として筋が良い</li>
+<li>ゲーム単独依存を避け、需要の変動リスクを分散できる</li>
+<li>成長物語（0→巨大）はゲームを問わず再利用できる構造で、フォーマット資産になる</li>
+</ul>
+<h3 id="d-docs-channel-strategy--22-失敗しうるシナリオ">2.2 失敗しうるシナリオ</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>シナリオ</th>
+<th>起きやすさ</th>
+<th>早期サイン</th>
+<th>緩和策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>3本が3つの別視聴者に届き、相互の移動がほぼゼロ（C1/C3）</td>
+<td>高</td>
+<td>YouTube Studio「他の動画を視聴した視聴者」でクロス視聴が見えない</td>
+<td>体験の見える統一。3本目を結果に応じて変更可能にする</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>一般向けにすると工業コアが退屈、玄人向けにすると一般が離脱</td>
+<td>高</td>
+<td>維持率が冒頭は良く中盤で急落</td>
+<td>前半=一般向け、後半=工業の深掘りの二層構造</td>
+</tr>
+<tr>
+<td>F3</td>
+<td><strong>企画系の長尺は「おすすめ（ブラウジング）流入」依存で、検索型ほど長期に残らない</strong>。公開後に波が来て、その後は減衰しがち</td>
+<td>中〜高</td>
+<td>30日以降の再生が急減。検索流入の割合が低い</td>
+<td>一般語タイトルに加えて、概要欄・チャプター・字幕・冒頭の発話に<strong>検索される語</strong>（ゲーム名＋やりたいこと）を意図して入れる。検索型の副産物（設計解説・初心者ガイド等）を少数混ぜる</td>
+</tr>
+<tr>
+<td>F4</td>
+<td>競合が想定以上に強い（海外のCreate/Factorio/CSは強豪が多数、日本のゆっくり市場も未調査）。新規チャンネルは同企画で勝てない</td>
+<td>中</td>
+<td>競合分析で「同企画×小規模チャンネルで伸びた例」が見つからない</td>
+<td>Phase 3 を撮影前に完了させる。企画の差別化を終了条件・縛り・数字で作る</td>
+</tr>
+<tr>
+<td>F5</td>
+<td>検証サイクルが長すぎて（1本数週間〜数か月）学習が遅れる／途中で飽きる</td>
+<td>中〜高</td>
+<td>1本目の撮影が計画の1.5倍超えに</td>
+<td>時間予算の上限を設定。撮影前に「終了条件」を固定。1本目は45時間を上限に</td>
+</tr>
+<tr>
+<td>F6</td>
+<td>ゆっくり実況形式が、対象ゲームの競合視聴者層（顔出し・肉声が主流の海外）と相性が悪い</td>
+<td>低〜中</td>
+<td>競合分析で形式差による分断が見える</td>
+<td>日本語圏のゆっくり市場に限定して勝ち筋を探す（§3 の言語判断）</td>
+</tr>
+<tr>
+<td>F7</td>
+<td>好み優先で工業に寄り、「何でもやるチャンネル」にも「工業専門」にもなり切れない</td>
+<td>中</td>
+<td>3本の客層が重ならない</td>
+<td>C5 の対策。判断ゲートで寄せる方向を決める</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--23-結論">2.3 結論</h3>
+<p><strong>仮説として採用するが、次の条件付き。</strong></p>
+<ol>
+<li>「体験の統一」を<strong>視聴者から見える形</strong>で実装する（シリーズ名・タイトル型・サムネ型・構成テンプレ）</li>
+<li>初期3本は「検証用」であり、ネットワーク構築は4本目以降と明記する</li>
+<li><strong>判断ゲート</strong>と<strong>撤退基準</strong>を事前に置く（数字は§3 の回答後に確定）</li>
+<li>検索流入の設計を最低限入れる（F3）</li>
+</ol>
+<h2 id="d-docs-channel-strategy--3-ユーザー判断待ち事項">3. ユーザー判断待ち事項</h2>
+<p>優先度の高い順。ここが埋まらないと企画の数字（時間予算・本数・撤退基準）は確定できない。</p>
+<ol>
+<li><s><strong>言語・市場</strong></s> → <strong>日本語圏で確定</strong>（2026-10-07 ユーザー回答）</li>
+<li><strong>チャンネルの現状</strong>: 「ゼロから」との回答あり。ただし「新規チャンネルをゼロから始める」のか「企画フォーマット『ゼロから○○』のこと」なのかを確認中。登録者数・既存チャンネルの有無は未回答</li>
+<li><s><strong>週あたりの制作時間</strong></s> → 平日1〜1.5h・土日 各5h程度、「全部フルはきつい」（2026-10-07 回答）。計画上は <strong>週12h</strong> を基準にする（§6）</li>
+<li><strong>収益目標と期間</strong>（例: 12か月後に月X円 / 1本あたり月X再生）</li>
+<li><strong>撮影済み素材・既プレイ時間があるか</strong>（あれば判断材料にする）</li>
+<li><strong>ゲーム環境</strong>: Createのパック（Minecraft/Createのバージョン）、FactorioのSpace Age有無、CS2のPC環境</li>
+<li><strong>ゆっくり立ち絵・声</strong>（キャラ・ボイスソフト・権利の確認）</li>
+</ol>
+<h2 id="d-docs-channel-strategy--4-初期3本の順番の再検討step-3">4. 初期3本の順番の再検討（Step 3）</h2>
+<h3 id="d-docs-channel-strategy--41-比較仮採点根拠は判断であってデータではない">4.1 比較（仮採点・根拠は判断であってデータではない）</h3>
+<p>採点式は指示.md §22 に「分かりやすさ」を乗数として追加: <code>長期需要×クリック力×動画寿命×波及×相性 ÷ (競争×制作コスト) × 分かりやすさ/10</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>長期需要</th>
+<th>クリック</th>
+<th>寿命</th>
+<th>波及</th>
+<th>相性</th>
+<th>競争</th>
+<th>コスト</th>
+<th>分かりやすさ</th>
+<th>補正後スコア</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>001 Create</td>
+<td>8</td>
+<td>6</td>
+<td>7</td>
+<td>6</td>
+<td>9</td>
+<td>7</td>
+<td>8</td>
+<td>7</td>
+<td><strong>約227</strong></td>
+</tr>
+<tr>
+<td>002 Factorio</td>
+<td>8</td>
+<td>5</td>
+<td>8</td>
+<td>7</td>
+<td>10</td>
+<td>7</td>
+<td>7</td>
+<td>4</td>
+<td><strong>約183</strong></td>
+</tr>
+<tr>
+<td>003 CS2</td>
+<td>6</td>
+<td>6</td>
+<td>5</td>
+<td>4</td>
+<td>7</td>
+<td>5</td>
+<td>7</td>
+<td>9</td>
+<td><strong>約130</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>（補正前は Create 324 / Factorio 457 / CS2 144。補正前だと Factorio が最大になるので、式から分かりやすさが抜けているのは実際の判断に効く。数値は相対比較用で、データで検証するまでは暫定）</p>
+<h3 id="d-docs-channel-strategy--42-順番の判断">4.2 順番の判断</h3>
+<ul>
+<li><strong>001 = Create は維持</strong>。分かりやすさと入口の大きさが効く。MinecraftとCreateの需要は大きい（Create MODのダウンロード数は CurseForge 約1.87億 + Modrinth 約1,730万 ※2026-04時点・要再確認）</li>
+<li><strong>002 = Factorio も維持</strong>。長期の人口が安定している（Steam 月平均 約1.5〜1.8万、2026年1〜6月 ※要再確認）。最大のリスクは「説明が難しい」ことなので、<strong>企画（終了条件・縛り・数字）で一般性を作る</strong></li>
+<li><strong>003 = CS2 は「確定しない」ことを提案</strong>:
+<ul>
+<li>CS2 は人口が小さめ（2026年6月 平均約9,500、ピーク約16,400 ※要再確認）、運営会社が変わり（Iceflake Studios）、追加コンテンツ（Expansion Pass 2: 2026-09-16、Park Adventures: 2026年Q4予定）が続いており、<strong>アップデート依存で寿命が短くなりやすい</strong></li>
+<li>Factorio視聴者とCS視聴者の重なりは未検証。重ならなければ F1 が発生する</li>
+<li><strong>代案</strong>: Satisfactory（Factorio/Createとの客層の近さが期待できる。現在の同時接続は約2万台、24時間ピーク約2.7万 ※2026-10時点・要再確認）</li>
+<li>ただし CS2 には「発展・巨大化」というブランドを工業の外に広げる<strong>検証価値</strong>がある</li>
+</ul>
+</li>
+<li><strong>提案</strong>: 001・002 を確定。003 は「001の30日データ」と「競合分析（Phase 3）」を見たうえで、CS2 か Satisfactory かを決める（この判断はユーザーに委ねる）</li>
+</ul>
+<h3 id="d-docs-channel-strategy--43-ゲームごとの判定は-researchgamecandidatesmd-を参照">4.3 ゲームごとの判定は <a class="doclink" href="#d-research-game-candidates"><code>research/GAME_CANDIDATES.md</code></a> を参照</h3>
+<h2 id="d-docs-channel-strategy--5-参考動画とユーザーの追加回答2026-10-07">5. 参考動画とユーザーの追加回答（2026-10-07）</h2>
+<p>ユーザーが参考動画（https://youtu.be/PHRqkara4eU）を共有し、「すごい参考にした」「日本語圏」「ゼロから」「工業に絞らなくてもいい」と回答。</p>
+<p><strong>動画本編は未視聴。</strong> このコンテナからは youtu.be に接続できない。その後ユーザーが概要欄とAI要約のスクリーンショットを提供（<a class="doclink" href="#d-research-competitors"><code>research/COMPETITORS.md</code></a> S-01）。参考動画は <strong>ふつうのくま の企画で、YouTube初心者がゼロから始めたチャンネル「ゆるめのまりさ」の100日間の検証動画「【検証】初心者が0からYouTubeを初めて、一体いくら稼げるのか？【ゆっくり実況】」（660,669回、2026-07-31公開）</strong>。以下は回答の文面とメタ情報・AI要約から導いた<strong>暫定の反映</strong>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>回答</th>
+<th>反映</th>
+<th>注意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>日本語圏</td>
+<td>言語・市場は日本語で確定。ゆっくり実況の競合は国内のゆっくり市場を中心に調べる（<a class="doclink" href="#d-research-competitors"><code>research/COMPETITORS.md</code></a>）</td>
+<td>海外競合は「構造の参考」に限定。需要は日本語圏の数字で見る</td>
+</tr>
+<tr>
+<td>ゼロから</td>
+<td>「何もない状態から巨大に」という成長物語を<strong>チャンネルの核</strong>に据える方向（<a class="doclink" href="#d-docs-video-format"><code>docs/VIDEO_FORMAT.md</code></a> の成長物語と一致）。フォーマット「ゼロから○○」を主軸にする案</td>
+<td>新規チャンネルの意味なのか、フォーマットの意味なのか未確認</td>
+</tr>
+<tr>
+<td>工業に絞らなくてもいい</td>
+<td>C5（好みバイアス）の制約が緩む。003の候補が CS2/Satisfactory 以外に広がる（HoI4・KSP・経営/都市系など）</td>
+<td>「何でもあり」にはしない。指示.md §5B（雑多なゲーム実況の回避）は維持。共通軸は「ゼロ→発展・巨大化」の体験</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--51-この回答で変わること">5.1 この回答で変わること</h3>
+<ul>
+<li>体験の軸は「<strong>ゼロから発展・巨大化する</strong>」に再定義するのが妥当（「自動化・工業」より広く、動画を見る理由が一般向けになる）。ただし<strong>検証前の仮説</strong></li>
+<li>003を「工業か否か」で選ばなくてよくなる → CS2 の「ゼロから人口10万人」が企画として自然に成立する</li>
+<li>工業は「入口の一つ」に降格。Create/Factorio は「ゼロから巨大化」を最も見せやすいゲームとして残る</li>
+</ul>
+<h3 id="d-docs-channel-strategy--52-まだ確認できていないこと参考動画を読めていないため">5.2 まだ確認できていないこと（参考動画を読めていないため）</h3>
+<ul>
+<li>動画本編の構成・尺。100日間の投稿本数・どのゲームが伸びたか</li>
+<li>検証動画の66万回は「YouTubeで稼ぐ」への興味による再生で、ゲーム企画の需要の裏付けにはしない。<strong>ゲーム動画の実績は100日で約34.6万回・約1か月で収益化</strong>（AI要約、未検証）が比較の基準</li>
+<li>「どこが参考になったか」（企画の型／構成／サムネ／ゆっくり編集／タイトル）</li>
+<li>その動画の企画を<strong>真似るのか構造だけ抽出するのか</strong>（指示.md §26 Phase 3：単純コピーは禁止）</li>
+</ul>
+<h3 id="d-docs-channel-strategy--53-参考動画から見えた論点2026-10-07ai要約のみ本編未視聴">5.3 参考動画から見えた論点（2026-10-07、AI要約のみ・本編未視聴）</h3>
+<p>詳細は <a class="doclink" href="#d-research-competitors"><code>research/COMPETITORS.md</code></a> S-01。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>論点</th>
+<th>内容</th>
+<th>扱い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>題材は「不朽の名作」</td>
+<td>長期需要のあるゲームを選ぶ点は、資産重視の方針と一致</td>
+<td>維持。ゲーム選定の基準に「何年も人口がいる」を継続して使う</td>
+</tr>
+<tr>
+<td>初期3〜5本でジャンルを認識させる</td>
+<td>指示書 §6 の「3本で固定とは決めつけない」と緊張。別ゲーム3本だと認識が割れる恐れ（C1/F1）</td>
+<td>3本を「体験が見える形で揃える」ことで緩和。ジャンル認識の根拠は本編で確認</td>
+</tr>
+<tr>
+<td>検証サイクルが速い</td>
+<td>100日・約1か月で収益化。重い長尺（30〜45時間/本）との差が大きい（C6/F5）</td>
+<td><strong>未決</strong>: 長尺を維持するか、軽い企画で先に回すか。制作時間の予算（§3）が決まってから判断</td>
+</tr>
+<tr>
+<td>経験者の企画・助言つきの初心者</td>
+<td>ふつうのくまの支援があった。完全な初心者ひとりの再現性は不明</td>
+<td>目安（100日で約34.6万回）は<strong>上振れの可能性がある基準</strong>として扱う</td>
+</tr>
+<tr>
+<td>スタジオの分析で修正</td>
+<td>維持率・検索キーワードを見て戦略を修正</td>
+<td>指示書 §23 と一致。公開後の運用に組み込み済み</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>未決のトレードオフ</strong>: 1時間級の長尺は資産になりうるが、初期は検証が遅い。参考動画のように回転を速める戦略の方が、チャンネルが「生き残る」確率は高い可能性がある。ただし指示書は「動画本数を増やすこと自体は目的にしない」と明記している。両立案（例: 10〜15時間プレイ・20〜30分の軽い企画を挟む）を検討するかは、ユーザー判断。</p>
+<h2 id="d-docs-channel-strategy--6-時間予算と制作本数の試算2026-10-07">6. 時間予算と制作本数の試算（2026-10-07）</h2>
+<h3 id="d-docs-channel-strategy--61-使える時間">6.1 使える時間</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>上限</th>
+<th>計画値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平日 1〜1.5h × 5日</td>
+<td>5〜7.5h</td>
+<td>—</td>
+</tr>
+<tr>
+<td>土日 各5h</td>
+<td>10h</td>
+<td>—</td>
+</tr>
+<tr>
+<td>合計</td>
+<td>15〜17.5h/週</td>
+<td><strong>12h/週</strong>（「全部フルはきつい」ので上限の約7割。続けられることを優先）</td>
+</tr>
+</tbody>
+</table></div>
+<p>100日 ≒ 14週 → <strong>約170時間</strong>。</p>
+<h3 id="d-docs-channel-strategy--62-1本あたりの制作時間推定">6.2 1本あたりの制作時間（推定）</h3>
+<p>編集時間は<strong>推定</strong>（ゆっくり実況の台本・音声・カット・テロップ・SE・サムネを含む）。初心者のうちは完成1分あたり0.5〜1時間かかると仮定。実測で置き換える。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>型</th>
+<th>プレイ</th>
+<th>完成尺</th>
+<th>編集（推定）</th>
+<th>合計</th>
+<th>週12hで</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>当初案（1時間級）</td>
+<td>30〜45h</td>
+<td>50〜65分</td>
+<td>25〜65h</td>
+<td><strong>55〜110h</strong></td>
+<td>1本 5〜9週</td>
+</tr>
+<tr>
+<td>中尺</td>
+<td>10〜15h</td>
+<td>20〜30分</td>
+<td>10〜30h</td>
+<td><strong>20〜45h</strong></td>
+<td>1本 2〜4週</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--63-結論">6.3 結論</h3>
+<ul>
+<li><strong>当初案のままだと、100日で出せるのは1.5〜3本</strong>。初期3本が出揃うのは4〜6か月後で、1本目のデータを見ないまま2本目・3本目に約200時間を投じることになる</li>
+<li>参考例（ゆるめのまりさ）が100日で収益化まで回したのと比べ、<strong>学習が遅すぎる</strong>。1本目で編集に想定以上の時間がかかると、継続が苦しくなる（「全部フルはきつい」との両立が難しい）</li>
+<li><strong>推奨</strong>: 最初の100日は中尺（20〜30分・プレイ10〜15h）で「ゼロから○○」を4〜6本回し、型・視聴維持・ジャンル認識を学ぶ。その後、勝ち筋のテーマで1時間級を「看板動画」として作る</li>
+<li>指示書「60分にするために素材を残さない」「本数自体を目的にしない」とは矛盾しない（中尺は本数稼ぎではなく、検証コストを下げる手段）</li>
+<li><strong>未決</strong>: ユーザーが1時間級にこだわるか（§6.4）</li>
+</ul>
+<h3 id="d-docs-channel-strategy--64-選択肢ユーザー判断">6.4 選択肢（ユーザー判断）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>案</th>
+<th>内容</th>
+<th>100日の本数</th>
+<th>長所</th>
+<th>短所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A（推奨）</td>
+<td>最初の100日は中尺、その後に1時間級</td>
+<td>4〜6本</td>
+<td>速く学べる・続けやすい</td>
+<td>1時間級の検証が後ろにずれる</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1本目だけ1時間級（Create）、2本目以降は中尺</td>
+<td>3〜4本</td>
+<td>一番やりたい企画を最初に出せる</td>
+<td>1本目に約2か月かかり、その間データが出ない</td>
+</tr>
+<tr>
+<td>C</td>
+<td>当初案（3本とも1時間級）</td>
+<td>1.5〜3本</td>
+<td>指示書どおり</td>
+<td>学習が遅い・継続の負担が大きい</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--65-更新-完成尺は1時間級を維持2026-10-07">6.5 更新: 完成尺は1時間級を維持（2026-10-07）</h3>
+<p>ユーザー回答: 参考動画で「動画の尺は1時間くらいがいい」と言っていた（本編は未確認。ユーザーの記憶ベース）。</p>
+<p><strong>1時間級が有利になりうる理由（妥当と判断）</strong></p>
+<ul>
+<li>収益化条件の「公開動画の総再生時間4,000時間」に早く届く。参考例が約1か月で収益化できた一因の可能性。<strong>2027-02-01から新規申請は8,000時間に倍増</strong>（<a class="doclink" href="#d-research-evidence"><code>research/EVIDENCE.md</code></a> E3）</li>
+<li>ゆっくり実況は「ながら見・作業用」で長尺がよく見られる傾向がある（一般論。データ未確認）</li>
+<li>1再生あたりの視聴時間が長く、中間広告も入れられる</li>
+</ul>
+<p><strong>ただし、尺とプレイ時間は別物。</strong> 当初案が重かった原因は「1時間の尺」より「30〜45時間のプレイ」と「1時間分の編集」。</p>
+<p><strong>修正方針（案A'）</strong></p>
+<ul>
+<li>完成尺: <strong>45〜70分を維持</strong></li>
+<li>プレイ: <strong>15〜20時間に縮小</strong>。終了条件を小さめに設定し、「ゼロから○○」の規模を絞る</li>
+<li>編集: テンプレート化（立ち絵・テロップ・SE・サムネの型を固定）で、完成1分あたり0.5時間を目標</li>
+<li>1本の合計: プレイ15〜20h ＋ 編集30〜45h ＝ <strong>約45〜65時間 → 週12hで4〜5週</strong></li>
+<li><strong>100日で3本前後</strong>。参考動画の言う「最初の3〜5本」の下限に届く</li>
+</ul>
+<p><strong>リスク</strong></p>
+<ul>
+<li>編集時間の推定（0.5〜1h/分）は仮定。1本目で実測し、1.0h/分を超えたら尺かテロップ密度を見直す</li>
+<li>15〜20時間で「巨大」と言える規模に到達できるかはゲーム次第（Factorio のハンドクラフト禁止は特に危険。テストプレイで確認）</li>
+<li>「60分にするために素材を残さない」は維持。素材が45分なら45分</li>
+</ul>
+<h3 id="d-docs-channel-strategy--66-データでの検証結果2026-10-07">6.6 データでの検証結果（2026-10-07）</h3>
+<p><a class="doclink" href="#d-research-evidence"><code>research/EVIDENCE.md</code></a> 参照。</p>
+<ul>
+<li>長尺（20分以上）が再生時間で有利: <strong>支持</strong>。「60分が最適」: <strong>根拠不足</strong>（30〜50分が1本あたりの総再生時間で最大という分析が1件あるのみ）→ 45〜70分を基本に、30〜45分も許容</li>
+<li>収益化条件は <strong>2027-02-01から8,000時間</strong>に倍増。1月末までに1,000人＋4,000時間を満たせば現行条件で参加できる。1本目を11月中に出せるかが分かれ目。ただし期限のために質は落とさない</li>
+<li>「最初の3〜5本でジャンルを認識」: <strong>公式データなし</strong>。初期の視聴者の傾向を揃える程度に解釈</li>
+</ul>
+<h2 id="d-docs-channel-strategy--7-参考動画の文字起こし全文から得た示唆と計画への影響2026-10-07">7. 参考動画の文字起こし全文から得た示唆と計画への影響（2026-10-07）</h2>
+<p>詳細は <a class="doclink" href="#d-research-competitors"><code>research/COMPETITORS.md</code></a> S-01。数値は投稿者の自己申告。</p>
+<h3 id="d-docs-channel-strategy--71-指示書の前提の出どころ">7.1 指示書の前提の出どころ</h3>
+<p>指示書 §3「工業系は説明が難しく広い視聴者に届きにくい」は、この動画の発言（56:04）と一致する。さらに、6本中で唯一の工業寄り（Astroneer）が相対的に失敗している。<strong>ユーザーの好み（工業）と、ユーザーが最も参考にした動画の結論が正面から衝突している</strong>ことを明記しておく。</p>
+<h3 id="d-docs-channel-strategy--72-計画への影響">7.2 計画への影響</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>これまでの計画</th>
+<th>文字起こし後の評価</th>
+<th>修正案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>001 Create・002 Factorio</td>
+<td>初期3本の2本が工業</td>
+<td>参考例の主張と真逆。工業の不調の例もある（n=1）</td>
+<td><strong>工業は初期3本から外すか、1本までにする</strong>。工業は視聴者が付いてから、同系統の名作と組み合わせて出す</td>
+</tr>
+<tr>
+<td>初期3本は別ゲーム</td>
+<td>体験の統一を重視</td>
+<td>参考例も「最初は系統を変える」→ 方針は一致</td>
+<td>維持。ただし3本とも<strong>大きなコミュニティのある名作</strong>から選ぶ</td>
+</tr>
+<tr>
+<td>開拓→名作の組み合わせ</td>
+<td>なし</td>
+<td>同系統の名作で前の動画が持ち上がる（系統が違うと効かない）</td>
+<td>ロードマップに「開拓→持ち上げ」の組み合わせを入れる（<a class="doclink" href="#d-docs-long-term-strategy"><code>LONG_TERM_STRATEGY.md</code></a> は改訂予定）</td>
+</tr>
+<tr>
+<td>検索流入の設計（F3 対策）</td>
+<td>重視</td>
+<td>初期は検索流入0.9%でほぼ効かない</td>
+<td>格下げ（やっておく程度）</td>
+</tr>
+<tr>
+<td>サムネ</td>
+<td>Before/After を最優先</td>
+<td>「一目で誰の動画か分かる」が最優先</td>
+<td><strong>キャラ・配色・構図を固定</strong>した上で Before/After を入れる</td>
+</tr>
+<tr>
+<td>編集時間</td>
+<td>0.5h/分を目標</td>
+<td>投稿者の目安は1h/分</td>
+<td><strong>1h/分で見積もる</strong>（§7.3）</td>
+</tr>
+<tr>
+<td>差別化</td>
+<td>「自動化・巨大化」</td>
+<td>「そこでしか得られないもの」が必要。名作のゆっくり実況は、この動画の影響で後発が増える可能性が高い</td>
+<td>「<strong>ゼロからシステムを使い倒して、極端に発展・巨大化させる</strong>」を差別化の軸に（名作でもこの切り口なら被りにくい）</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--73-時間予算の再計算編集1h分">7.3 時間予算の再計算（編集1h/分）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>完成尺</th>
+<th>プレイ</th>
+<th>編集</th>
+<th>合計</th>
+<th>週12hで</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60分</td>
+<td>15h</td>
+<td>60h</td>
+<td>75h</td>
+<td>約6週</td>
+</tr>
+<tr>
+<td>45分</td>
+<td>12h</td>
+<td>45h</td>
+<td>57h</td>
+<td>約5週</td>
+</tr>
+<tr>
+<td>40分</td>
+<td>10h</td>
+<td>40h</td>
+<td>50h</td>
+<td>約4週</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>2027-01-31（約16週）までに3本</strong>を出すには、1本あたり約5週＝<strong>40〜45分</strong>が上限</li>
+<li>参考例は 1時間半〜2時間の動画を2〜3週に1本（週30〜60時間相当）。<strong>同じペースはこちらの時間予算では不可能</strong></li>
+<li>一方で参考例の最多再生（Cookie Clicker）は「普段の半分以下」の尺。<strong>尺は大事だが、名作の力の方が大きかった</strong>例がある</li>
+<li>1本目で編集時間を実測し、0.7h/分以下なら60分に戻す</li>
+</ul>
+<h3 id="d-docs-channel-strategy--74-この動画をそのまま真似してはいけない理由">7.4 この動画をそのまま真似してはいけない理由</h3>
+<ol>
+<li>戦略担当は4年研究した人気投稿者。収益化の承認や初動に、本人の実績が効いた可能性がある</li>
+<li>制作量が週30〜60時間相当で、こちらの約3〜5倍</li>
+<li>66万人が見た動画で「どのゲームが伸びるか」まで公開されており、同じゲームでは後発になる</li>
+<li>成功した1例で、自己申告</li>
+</ol>
+<h3 id="d-docs-channel-strategy--75-次に決めることユーザー判断">7.5 次に決めること（ユーザー判断）</h3>
+<ol>
+<li><s><strong>工業ゲームを初期3本に入れるか</strong></s> → <strong>こだわらない</strong>（2026-10-07 ユーザー回答）。初期3本は工業以外の名作から選び、工業（Create 等）は後で「同系統の名作の後に」出す</li>
+<li>初期3本の候補を「名作 × ゼロから発展・巨大化」で選び直すか</li>
+<li>1本目の尺: 40〜45分（期限に間に合う）か60分（期限を気にしない）</li>
+</ol>
+<h2 id="d-docs-channel-strategy--8-初期3本の再設計2026-10-07工業にこだわらない方針を受けて">8. 初期3本の再設計（2026-10-07、工業にこだわらない方針を受けて）</h2>
+<h3 id="d-docs-channel-strategy--81-選び方">8.1 選び方</h3>
+<ol>
+<li>長く人口がいる名作（Steam の人口・参考例の実績）</li>
+<li>3本の系統を変える（参考例の戦略：「ゲーム実況」の広い括りで認識させる）</li>
+<li>3本とも「<strong>ゼロからシステムを使い倒して、極端に発展・巨大化させる</strong>」切り口が成立する（チャンネル独自の「そこでしか得られないもの」）</li>
+<li>後で同系統の名作で持ち上げられる（開拓→持ち上げ）</li>
+<li>1本あたりプレイ10〜15時間・完成40〜50分に収まる</li>
+</ol>
+<h3 id="d-docs-channel-strategy--82-案">8.2 案</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>1本目</th>
+<th>2本目</th>
+<th>3本目</th>
+<th>長所</th>
+<th>短所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>案1（推奨）</strong></td>
+<td>Minecraft（バニラ）: ゼロから全自動の資源拠点</td>
+<td>Stardew Valley: 農場を全自動化して極限まで稼ぐ</td>
+<td>Palworld: パルを働かせて全自動の巨大拠点</td>
+<td>3本とも人口が最大級。「自動化・巨大化」を専門用語なしで見せられる。Minecraft の視聴者は後で Create（工業）への橋になる</td>
+<td>Stardew・Palworld は参考例と同じゲーム（後発との競合）。Minecraft のゆっくり実況は競争が激しい</td>
+</tr>
+<tr>
+<td>案2（被り回避）</td>
+<td>Minecraft（バニラ）</td>
+<td>Cities: Skylines（初代）: ゼロから人口10万</td>
+<td>Palworld</td>
+<td>参考例との被りが1本に減る。都市の発展は Before/After が分かりやすい</td>
+<td>Cities は人口が小さい（Steam 月平均 約8,000〜1万）</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--83-推奨の理由と注意">8.3 推奨の理由と注意</h3>
+<ul>
+<li>3本の系統: 3Dサンドボックス／2D育成／3Dオープンワールド。参考例の「系統を変えて広く認識させる」と一致</li>
+<li>好み（自動化）は捨てずに、<strong>専門知識のいらない自動化</strong>（マイクラの自動装置、スターデューのスプリンクラー、パルの労働）として残す</li>
+<li>工業（Create・Factorio）は、Minecraft の視聴者が付いた後の4本目以降の候補。参考例の「開拓→同系統で持ち上げ」と同じ構造</li>
+<li><strong>Palworld は 2026-07 の正式版ブームの最中</strong>。資産というより集客寄りの可能性がある（3本目に置き、結果を見て続けるか判断）</li>
+<li>いずれも<strong>競合調査が未了</strong>（YouTube にアクセスできないため）。撮影前に、同じゲームのゆっくり実況の最近の伸びを最低10本確認する</li>
+</ul>
+<h3 id="d-docs-channel-strategy--84-尺とスケジュール暫定ユーザー未回答">8.4 尺とスケジュール（暫定。ユーザー未回答）</h3>
+<ul>
+<li>完成40〜50分・プレイ10〜15時間・合計50〜65時間 → 1本4〜5週</li>
+<li>1本目: 11月中旬、2本目: 12月中旬、3本目: 1月下旬 → 2027-01-31 の収益化条件の変更前に3本</li>
+</ul>
+<h3 id="d-docs-channel-strategy--85-更新-minecraftバニラを初期3本から外す2026-10-07">8.5 更新: Minecraft（バニラ）を初期3本から外す（2026-10-07）</h3>
+<ul>
+<li>ユーザー指摘: <strong>バニラで全自動は厳しい</strong>（自動化できるのは農場系が中心で、「全部自動」の企画は成立しにくい）。加えて、ゆっくり実況で最も競争が激しく、参考例も Minecraft を出していない。選んだ根拠が「市場が大きい」「Create への橋」だけで、勝てる根拠がなかった</li>
+<li><strong>暫定の初期3本（案3）: Stardew Valley → Palworld → Cities: Skylines（初代）または Terraria</strong></li>
+<li>同じ問題の点検: Stardew もバニラでは加工（樽・瓶など）の自動化ができないため、「全自動」と言うと嘘になる → **「全自動」ではなく「最適化・数字・巨大化」**の切り口にする（例: 1年目でいくら稼げるか／農場を限界まで広げる）。Palworld はパルの労働で拠点の自動化が本筋なので「全自動」が成立しやすい</li>
+<li>教訓: 企画の切り口（全自動など）が<strong>そのゲームで本当に成立するか</strong>を、プレイ経験のあるユーザーに確認してから決める（G0 のチェック項目に追加）</li>
+</ul>
+<h3 id="d-docs-channel-strategy--86-ユーザーのプレイ経験2026-10-07">8.6 ユーザーのプレイ経験（2026-10-07）</h3>
+<ul>
+<li>回答: Stardew Valley・Palworld・Cities: Skylines・Terraria は<strong>すべて初見</strong></li>
+<li><strong>緊張関係</strong>: 市場が大きい名作は初見。プレイ経験がありそうなのは工業系（Factorio・Create 等、要確認）で、参考例では「工業は伸ばしにくい」とされる</li>
+<li><strong>影響</strong>:
+<ul>
+<li>「システムを使い倒して極端に」「最適化・理論上最高効率」の切り口は、初見では説得力が出にくく、調べる時間も増える</li>
+<li>代わりに「<strong>初見・ゼロから、どこまで発展できるか</strong>」なら成立する（成長物語＝指示書 §10 と一致。プレイヤー自身の上達も成長として見せられる）</li>
+<li>企画が成立するか（全自動にできるか等）を事前に判断できないため、<strong>撮影前に1〜2時間の試しプレイ</strong>か、仕組みの下調べを G0 に入れる</li>
+<li>初見はプレイ時間が読みにくい → 終了条件は「ゲーム内の区切り」（例: Stardew の1年目終了）で決め、時間で打ち切れるようにする</li>
+</ul>
+</li>
+<li>未確認: 実際にやり込んだゲーム（得意なゲーム）は何か</li>
+</ul>
+<h3 id="d-docs-channel-strategy--87-何十時間も遊んだゲームはない2026-10-07-ユーザー回答">8.7 「何十時間も遊んだゲームはない」（2026-10-07 ユーザー回答）</h3>
+<ul>
+<li>工業も含め、<strong>プレイ経験による強みはどのゲームにもない</strong>。工業は「好み」であって「得意」ではない</li>
+<li>→ ゲーム選びで強みを理由に工業を優先する根拠がなくなった。<strong>市場（名作）優先・初見で「ゼロからどこまで発展できるか」で確定方向</strong></li>
+<li>好み（自動化・発展）は、企画の切り口と、プレイを続けるモチベーションとして使う</li>
+<li>1本目は Stardew Valley で企画書を作成（<code>videos/001-stardew/</code>）</li>
+</ul>
+<h2 id="d-docs-channel-strategy--9-参考動画のパクリになっていないかの点検2026-10-07">9. 「参考動画のパクリになっていないか」の点検（2026-10-07）</h2>
+<p>ユーザー指摘: 計画書が参考動画のパクリになっている。→ <strong>指摘は正しい。</strong></p>
+<h3 id="d-docs-channel-strategy--91-被っているもの">9.1 被っているもの</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>要素</th>
+<th>参考例</th>
+<th>計画 v2.1</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ゲーム</td>
+<td>Stardew → Revolution Idle → Palworld → Cookie Clicker → Terraria</td>
+<td>Stardew → Palworld → Terraria/Cities</td>
+<td><strong>ほぼ同じ</strong>（3本中2〜3本が一致）</td>
+</tr>
+<tr>
+<td>1本目</td>
+<td>Stardew</td>
+<td>Stardew</td>
+<td><strong>同じ</strong></td>
+</tr>
+<tr>
+<td>スタイル</td>
+<td>1人が淡々＋ボケツッコミ</td>
+<td>初見の主役＋ツッコミ兼解説</td>
+<td>近い（ゆっくり全般の型でもある）</td>
+</tr>
+<tr>
+<td>長尺・名作・ショートなし・初期は系統を変える・サムネは型</td>
+<td>○</td>
+<td>○</td>
+<td>一般的な原則。借りてよい</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--92-問題点">9.2 問題点</h3>
+<ol>
+<li><strong>見た目が「あの動画のフォロワー」になる</strong>: ゆっくり実況の視聴者は66万回再生の参考動画を見ている可能性が高い。新規チャンネルが Stardew→Palworld→Terraria と出せば、真似と受け取られやすい</li>
+<li><strong>後発との正面衝突</strong>: 同じ手順を真似する人が他にもいる</li>
+<li><strong>「そこでしか得られないもの」がない</strong>: 参考例自身が「1人だけを参考にするとパクリ。いろんな人の良いところを盗んでアレンジする」と言っている。指示書 §26 も「単純コピーは禁止。構造だけ抽出」</li>
+<li><strong>指示書の核が薄まった</strong>: 「ゲームのシステムを使い倒して、とんでもないものを作る」「発展・最適化・巨大化・街づくり・資源管理」が、初見の牧場プレイに置き換わってしまった</li>
+</ol>
+<h3 id="d-docs-channel-strategy--93-線引き">9.3 線引き</h3>
+<ul>
+<li><strong>借りてよい（原則）</strong>: 長く遊ばれる名作を選ぶ／長尺／ショートに頼らない／サムネは一目で誰の動画か分かる型／データで修正する</li>
+<li><strong>自分で作る（具体）</strong>: ゲームの並び・企画の型・看板になる見せ場・チャンネルの軸</li>
+</ul>
+<h3 id="d-docs-channel-strategy--94-オリジナルにする案">9.4 オリジナルにする案</h3>
+<p><strong>軸を指示書の原点に戻す: 「発展」を見る人のためのチャンネル</strong>（参考例は「ゲーム実況」の広い括りを狙う戦略。こちらは「発展という体験で統一する」戦略で、<strong>賭けの方向が違う</strong>）</p>
+<ul>
+<li><strong>シリーズの型（看板）</strong>: 「初見・ゼロから、決めた期間でどこまで発展できるか」＋最後に毎回同じ画面で**「決算」**（人口・資産・規模などを数字で発表）。参考例にはない、チャンネル共通の見せ場</li>
+<li><strong>ゲーム</strong>: 参考例が触れていない「発展・建設・経営」系の名作</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>候補</th>
+<th>ジャンル</th>
+<th>Steam の人口（⚠️二次情報）</th>
+<th>合う理由</th>
+<th>懸念</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cities: Skylines（初代）</td>
+<td>街づくり</td>
+<td>月平均 約8,300〜1万</td>
+<td>Before/After が最も分かりやすい。初見でも成立しやすい</td>
+<td>人口は中規模</td>
+</tr>
+<tr>
+<td>RimWorld</td>
+<td>コロニー経営</td>
+<td>直近の月平均 約2.7万・ピーク約4万</td>
+<td>長く遊ばれている名作。失敗やドラマが見せ場になり、ゆっくりの掛け合いと相性が良い</td>
+<td>初見だと覚えることが多い</td>
+</tr>
+<tr>
+<td>Civilization（VI/VII）</td>
+<td>文明の発展</td>
+<td>VII は約1.2万（2026-09）。VI は未取得</td>
+<td>「ゼロから文明」は発展そのもの</td>
+<td>1プレイが長い。期間を区切る工夫が必要</td>
+</tr>
+<tr>
+<td>Oxygen Not Included</td>
+<td>コロニー＋工学</td>
+<td>月平均 約1.3万</td>
+<td>発展・最適化</td>
+<td>工業並みに説明が難しい</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-channel-strategy--95-トレードオフ正直な評価">9.5 トレードオフ（正直な評価）</h3>
+<ul>
+<li>案X（参考例寄り・Stardew 等）: 新規でも伸びた実績がある。<strong>ただし真似に見え、後発と競合する</strong></li>
+<li>案Y（発展シミュ路線＋決算の型）: 独自性があり、指示書の思想と一致。<strong>ただし市場は Stardew より小さく、「シミュレーション好き」に客層が絞られすぎる危険</strong>（参考例の警告）。実績のある前例も未確認</li>
+<li>案Z（混合）: 1本目は案Yのゲーム、後で Stardew 等を「決算の型」で出す</li>
+</ul>
+<h3 id="d-docs-channel-strategy--96-決定2026-10-07">9.6 決定（2026-10-07）</h3>
+<ul>
+<li>ユーザー回答: <strong>案Y か案Z</strong>。両案とも1本目は発展シミュのゲームなので、<strong>1本目は Cities: Skylines（初代）で確定方向</strong>。Y と Z の違い（3本目以降に大きな名作を混ぜるか）は G2 で決める</li>
+<li>シリーズの型: <strong>「初見・ゼロから12時間で、どこまで発展できるか」＋「決算」</strong>。12時間で区切ることで、初見でもプレイ時間がぶれず、ゲームが変わっても型が共通になる</li>
+<li>2本目: RimWorld（暫定）</li>
+<li>スタイル: 初見の主役＋ツッコミ兼解説役（ユーザー「いいね」）</li>
+<li>計画: <a class="doclink" href="#d-docs-long-term-strategy"><code>docs/LONG_TERM_STRATEGY.md</code></a> v3、企画書: <a class="doclink" href="#d-videos-001-cities2-idea"><code>videos/001-cities2/idea.md</code></a></li>
+</ul>
+<h2 id="d-docs-channel-strategy--10-目標2週間に1本1時間前後の実現性2026-10-07">10. 目標「2週間に1本・1時間前後」の実現性（2026-10-07）</h2>
+<p>ユーザーの目標: <strong>2週間に1回、1時間前後の動画</strong>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>条件</th>
+<th>1本の制作時間</th>
+<th>2週間で1本に必要な週あたりの時間</th>
+<th>現在の予算（週12h）で何週に1本か</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60分・編集1h/分・プレイ12h</td>
+<td>72h</td>
+<td><strong>36h/週</strong>（予算の3倍）</td>
+<td>約6週</td>
+</tr>
+<tr>
+<td>60分・編集0.5h/分・プレイ12h</td>
+<td>42h</td>
+<td>21h/週</td>
+<td>約3.5週</td>
+</tr>
+<tr>
+<td>60分・編集0.3h/分・プレイ12h</td>
+<td>30h</td>
+<td>15h/週（上限ぎりぎり）</td>
+<td>約2.5週</td>
+</tr>
+<tr>
+<td>45分・編集1h/分・プレイ12h</td>
+<td>57h</td>
+<td>28.5h/週</td>
+<td>約5週</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>結論: 今の時間予算と編集速度（1h/分）では、2週間に1時間の動画は不可能（必要時間が約3倍）。</strong><br>
+参考例の2〜3週に1本は、戦略担当と編集担当の2人体制で、週30〜60時間相当の作業量だった（<a class="doclink" href="#d-research-competitors"><code>research/COMPETITORS.md</code></a> S-01）。</p>
+<h3 id="d-docs-channel-strategy--実現するための条件どれかまたは組み合わせ">実現するための条件（どれか、または組み合わせ）</h3>
+<ol>
+<li><strong>作業時間を増やす</strong>（週36h。「全部フルはきつい」と両立しない）</li>
+<li><strong>編集を速くする</strong>（0.3h/分まで上げれば、週15hで約2.5週に1本。テンプレート化・テロップを減らす・淡々型の比率を上げる。ただし1本目は初めてなので遅いはず）</li>
+<li><strong>頻度か尺のどちらかを下げる</strong>（参考例は「投稿間隔より尺の方が大切」「狙った層なら間が空いても問題ない」と言っている → 尺を優先するのが参考例とも整合）</li>
+</ol>
+<h3 id="d-docs-channel-strategy--方針提案">方針（提案）</h3>
+<ul>
+<li><strong>最初は「1時間前後・5〜6週に1本」で始め、2週間に1本は「編集が速くなった後の目標」にする</strong></li>
+<li>1本目で編集時間を実測。2本目以降で0.5h/分→0.3h/分を目指して改善し、間隔を縮める</li>
+<li>1本目の時点で、編集の速度を上げる工夫（テンプレート・素材の使い回し・テロップの量）を決めておく</li>
+</ul>
+<h3 id="d-docs-channel-strategy--101-更新-作業時間を増やす案c2026-10-07">10.1 更新: 作業時間を増やす（案C、2026-10-07）</h3>
+<p>ユーザー回答: <strong>平日2時間・休日5時間 → 週20時間</strong>（これまでの上限15〜17.5時間を超える）。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>間隔</th>
+<th>1本に使える時間</th>
+<th>60分を作るのに必要な編集速度（プレイ12h込み）</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4週</td>
+<td>80h</td>
+<td>1.1h/分</td>
+<td><strong>今の速度（1h/分）で可能</strong></td>
+</tr>
+<tr>
+<td>3週</td>
+<td>60h</td>
+<td>0.8h/分</td>
+<td>少し速くなれば可能</td>
+</tr>
+<tr>
+<td>2週</td>
+<td>40h</td>
+<td>0.47h/分</td>
+<td><strong>今の半分の時間で編集できれば可能</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>方針: <strong>4週 → 3週 → 2週と、編集の上達に合わせて間隔を縮める</strong>（<a class="doclink" href="#d-docs-long-term-strategy"><code>docs/LONG_TERM_STRATEGY.md</code></a> v3.1）。</p>
+<p>注意: 週20時間は、以前の回答「全部フルはきつい」の上限を超えている。何か月も続くかが最大のリスク。実際に16時間しか取れない週が続けば、各公開は約25%遅れる。燃え尽きて止まる方が、資産形成にとっては遅れより損失が大きい。</p>
+<h2 id="d-docs-channel-strategy--11-制作環境2026-10-07">11. 制作環境（2026-10-07）</h2>
+<ul>
+<li>PC: Ryzen 7 9700X ／ RTX 5060 Ti 16GB ／ <strong>メモリ32GB</strong>（Cities II・RimWorld に十分。録画は GPU のエンコーダーを使えば負荷は小さい）</li>
+<li>編集ソフト: <strong>YMM4</strong></li>
+<li>キャラ: スタイルと一緒に後で決める（準備期間中に決める）</li>
+<li>権利: ユーザー認識「無収益ならOK」→ 1月に収益化する計画なので、<strong>AquesTalk の商用ライセンスなどが必要</strong>（<a class="doclink" href="#d-research-rights"><code>research/RIGHTS.md</code></a>）</li>
+</ul>
+<h2 id="d-docs-channel-strategy--12-1本目を-cities-skylines-ii-に変更2026-10-07">12. 1本目を Cities: Skylines II に変更（2026-10-07）</h2>
+<ul>
+<li>ユーザー希望: 初代ではなく <strong>II</strong></li>
+<li>評価: Steam の人口は初代とほぼ同じか少し多い。見た目が新しくサムネが強い。好み（モチベーション）も重要なので <strong>II で進める</strong></li>
+<li>以前の懸念（§4・<a class="doclink" href="#d-research-game-candidates"><code>research/GAME_CANDIDATES.md</code></a>）はそのまま残る: <strong>アップデートで古くなりやすい</strong>。Park Adventures（2026年中・日付未定）で公園と観光の経済が変わる → 基本の発展で見せる・撮影前にパッチを確認（<a class="doclink" href="#d-videos-001-cities2-idea"><code>videos/001-cities2/idea.md</code></a>）</li>
+</ul>
+</article>
+<article id="d-docs-content-pillars" hidden><div class="src">docs/CONTENT_PILLARS.md</div>
+<h1 id="d-docs-content-pillars--コンテンツの柱">コンテンツの柱</h1>
+<p>「ゲームを統一する」のではなく「<strong>視聴体験と企画フォーマットを統一する</strong>」。ゲームは入れ替わる。</p>
+<h2 id="d-docs-content-pillars--体験の軸共通の快感">体験の軸（共通の快感）</h2>
+<p>自動化・最適化・巨大化・発展・極端な挑戦・ゼロから巨大システムへ。</p>
+<h2 id="d-docs-content-pillars--企画フォーマット資産にする単位">企画フォーマット（資産にする単位）</h2>
+<p>指示.md §14 の7つ。各フォーマットが複数ゲームで通用するかを検証する。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>フォーマット</th>
+<th>型</th>
+<th>初期の検証動画</th>
+<th>制作コストの注意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>完全自動化</td>
+<td>「○○を全部自動化したらどうなる？」</td>
+<td>001・002</td>
+<td>中〜高</td>
+</tr>
+<tr>
+<td>巨大化</td>
+<td>「限界まで巨大化したら？」</td>
+<td>001（最終段階）</td>
+<td>中</td>
+</tr>
+<tr>
+<td>ゼロから○○</td>
+<td>「何もない状態から人口10万人へ」</td>
+<td>003</td>
+<td>中</td>
+</tr>
+<tr>
+<td>制限（縛り）</td>
+<td>「○○禁止でできる？」</td>
+<td>002（ハンドクラフト禁止）</td>
+<td>時間が膨らみやすい</td>
+</tr>
+<tr>
+<td>最適化</td>
+<td>「理論上最高効率の○○」</td>
+<td>未定</td>
+<td>検証コストが高い</td>
+</tr>
+<tr>
+<td>数字</td>
+<td>「毎分○万個生産する工場」</td>
+<td>全動画の最終成果</td>
+<td>低（見せ方の工夫）</td>
+</tr>
+<tr>
+<td>100時間</td>
+<td>「100時間やったら世界はどうなる？」</td>
+<td><strong>当面やらない</strong></td>
+<td>非常に高い。資産効率が読めるまで保留</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-docs-content-pillars--ゲームの階層不動産分類">ゲームの階層（不動産分類）</h2>
+<p>一等地（Minecraft・Factorio・Satisfactory候補）を中心に、安定収益物件（KSP・Cities・HoI4）を補助、成長株・投機は少数。詳細は <a class="doclink" href="#d-research-game-candidates"><code>research/GAME_CANDIDATES.md</code></a>。</p>
+<h2 id="d-docs-content-pillars--運用ルール">運用ルール</h2>
+<ul>
+<li>新企画は少なくとも1つのフォーマットに乗せる（乗らない企画は原則やらない）</li>
+<li>同じフォーマットを別のゲームで成立させられるかを毎回記録する（<a class="doclink" href="#d-experiments-results"><code>experiments/RESULTS.md</code></a>）</li>
+</ul>
+</article>
+<article id="d-docs-long-term-strategy" hidden><div class="src">docs/LONG_TERM_STRATEGY.md</div>
+<h1 id="d-docs-long-term-strategy--長期戦略計画-v3">長期戦略・計画 v3</h1>
+<p>最終更新: 2026-10-08 / ステータス: <strong>叩き台 v3.2</strong>（制作開始を中間試験後の 10/22 夜に変更し、日程を約1週間うしろにずらした。v3.1: 週20時間・4週→3週→2週に間隔を縮める方針を反映。ユーザーが案Y か Z を選択。1本目は共通で Cities: Skylines II（初代から変更）。Y と Z の違いは3本目以降なので G2 で決める）<br>
+経緯: v1（Create→Factorio→CS2）は工業・初見の問題で保留。v2（Stardew→Palworld→…）は参考動画のパクリになるため変更（<a class="doclink" href="#d-docs-channel-strategy"><code>CHANNEL_STRATEGY.md</code></a> §9）。</p>
+<h2 id="d-docs-long-term-strategy--0-前提">0. 前提</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市場</td>
+<td>日本語圏・新規チャンネル（ゼロから）</td>
+</tr>
+<tr>
+<td>軸</td>
+<td><strong>「発展」を見る人のためのチャンネル</strong>。ゲームではなく体験で統一（指示書の原点）</td>
+</tr>
+<tr>
+<td>シリーズの型</td>
+<td><strong>「初見・ゼロから12時間で、どこまで発展できるか」＋最後に「決算」</strong>（毎回同じ画面で数字を発表）</td>
+</tr>
+<tr>
+<td>スタイル</td>
+<td>初見の主役＋ツッコミ兼解説役。掛け合いは山場に絞る</td>
+</tr>
+<tr>
+<td>尺</td>
+<td><strong>1時間前後</strong>（ユーザー目標。編集1分=1時間から始め、上達で短縮）</td>
+</tr>
+<tr>
+<td>時間</td>
+<td><strong>週20時間</strong>（平日2h・休日5h）。1本 ≒ プレイ12h＋編集60h＝72h → 最初は4週に1本</td>
+</tr>
+<tr>
+<td>目標の頻度</td>
+<td><strong>2週間に1本</strong>（編集0.47h/分まで速くなったら）。4週→3週→2週と縮める</td>
+</tr>
+<tr>
+<td>期限</td>
+<td>2027-01-31（1,000人＋4,000時間なら旧条件で収益化）。間に合えば良い程度</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-docs-long-term-strategy--1-最初の100日週20時間">1. 最初の100日（週20時間）</h2>
+<p><strong>制作開始は 10/22（木）夜</strong>（中間試験が終わってから。2026-10-08 ユーザー決定）。それまでユーザーの作業はゼロ。準備に使える日が11日→4日に減ったので、<strong>机の上でできる準備（型の設計書・チェックリスト）は試験中にこちらで用意し、10/22 からは手を動かすだけにする</strong>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>期間</th>
+<th>内容</th>
+<th>必要な編集速度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>〜10/22</td>
+<td><strong>試験期間（ユーザーは作業なし）</strong>。こちらで、決算画面・テロップ・サムネの型の設計書と、準備のチェックリストを用意</td>
+<td>—</td>
+</tr>
+<tr>
+<td>10/22（木）夜〜10/25（日）（約14h）</td>
+<td><strong>準備</strong>: チャンネル作成／YMM4 で決算画面・テロップ・サムネの型を作る（設計書どおり）／録画設定と保存容量の確認（<strong>別の空マップで5分だけ</strong>。街づくりはしない）／AquesTalk の商用ライセンス購入の判断（<a class="doclink" href="#d-research-rights"><code>research/RIGHTS.md</code></a>）。終わらなければ 10/26〜27 にはみ出してよい</td>
+<td>—</td>
+</tr>
+<tr>
+<td>10/26〜11/22（4週）</td>
+<td><strong>1本目 Cities: Skylines II</strong>（<a class="doclink" href="#d-videos-001-cities2-idea"><code>videos/001-cities2/</code></a>）→ <strong>11/22（日）ごろ公開</strong>。<strong>編集時間を記録</strong></td>
+<td>1h/分</td>
+</tr>
+<tr>
+<td>11/23〜12/13（3週）</td>
+<td><strong>2本目 RimWorld</strong> → 12/13ごろ公開</td>
+<td>0.8h/分</td>
+</tr>
+<tr>
+<td>11/29ごろ</td>
+<td>G1: 1本目の7日目チェック</td>
+<td></td>
+</tr>
+<tr>
+<td>12/13ごろ</td>
+<td><strong>G2（前倒し）: 1本目の約3週間のデータで3本目と Y/Z を決定</strong>（3本目の制作開始に間に合わせるため30日を待たない）</td>
+<td></td>
+</tr>
+<tr>
+<td>12/14〜1/3（3週）</td>
+<td><strong>3本目</strong>（案Y: Civilization など／案Z: Stardew などの名作を「12時間＋決算」で）→ 1/3ごろ公開（冬休み中）</td>
+<td>0.8h/分</td>
+</tr>
+<tr>
+<td>1/4〜1/17（2週）</td>
+<td><strong>4本目</strong>（2週に挑戦。間に合わなければ3週で1/24）</td>
+<td>0.47h/分</td>
+</tr>
+<tr>
+<td>1月</td>
+<td>条件（1,000人＋4,000時間）を満たしていればすぐ収益化を申請</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>1月末までに<strong>3〜4本</strong>（本数は v3.1 と同じ。全体が約1週間うしろにずれた）。</p>
+<ul>
+<li><strong>競合10本の確認</strong>（G0）は準備期間から外し、1本目の撮影と並行して最初の1週間で行う（この環境から YouTube が見られないので、ユーザーに URL か文字起こしを貼ってもらう）。初見の企画なので、競合を見て切り口を変える余地は小さく、撮影を止める理由になりにくいため</li>
+<li><strong>試験期間のルール</strong>: 試験中は制作を止める前提で組む。期末試験などの日程が分かった時点でこの表に反映する。冬休みに時間が増えるなら、遅れの取り戻しに使う</li>
+</ul>
+<h2 id="d-docs-long-term-strategy--2-判断ゲート">2. 判断ゲート</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ゲート</th>
+<th>タイミング</th>
+<th>見るもの</th>
+<th>決めること</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G0</td>
+<td>各動画の撮影前</td>
+<td>競合10本・切り口が成立するか（<strong>試しプレイはしない</strong>。初見の反応が一番出る最初の1時間を、カメラの外で使ってしまうため）</td>
+<td>撮影を始めるか／企画を変えるか</td>
+</tr>
+<tr>
+<td>G1</td>
+<td>公開7日</td>
+<td>インプレッション・クリック率・冒頭30秒の維持率・平均視聴時間</td>
+<td>次の動画のタイトル・サムネ・冒頭（参考例の目安「1週間以内に伸び始めなければ質に問題」）</td>
+</tr>
+<tr>
+<td>G2</td>
+<td>1本目の公開約3週（前倒し）</td>
+<td>再生の推移・平均視聴時間・視聴者の年齢と性別・<strong>実測の編集時間</strong></td>
+<td><strong>案Y（発展シミュで固める）か案Z（名作も混ぜる）か</strong>／尺</td>
+</tr>
+<tr>
+<td>G3</td>
+<td>3本公開から30日</td>
+<td>3本の比較・視聴者の重なり（「他の動画を視聴した視聴者」）</td>
+<td>4〜6本目</td>
+</tr>
+<tr>
+<td>G4</td>
+<td>3本公開から90日</td>
+<td>長期の再生推移・流入元</td>
+<td>客層仮説の更新</td>
+</tr>
+<tr>
+<td>G5</td>
+<td>10本時点</td>
+<td>型（12時間＋決算）の成績</td>
+<td>型を続けるか・変えるか</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-long-term-strategy--g2-の判断基準暫定">G2 の判断基準（暫定）</h3>
+<ul>
+<li>1本目・2本目が<strong>伸び始め、視聴者の重なりがある</strong> → 案Y（発展シミュで固める。Civilization・Oxygen Not Included・Frostpunk 等）</li>
+<li><strong>伸びが弱い</strong>、または客層が狭すぎる → 案Z（Stardew・Terraria など大きな名作を、同じ「12時間＋決算」の型で出して入口を広げる）</li>
+</ul>
+<h2 id="d-docs-long-term-strategy--3-4本目以降">3. 4本目以降</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状況</th>
+<th>次の候補</th>
+<th>狙い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>発展シミュが伸びた</td>
+<td>同系統の名作（Civilization・Frostpunk・Oxygen Not Included など）で「開拓→持ち上げ」</td>
+<td>発展チャンネルとして固める</td>
+</tr>
+<tr>
+<td>型（12時間＋決算）が強い</td>
+<td>大きな名作（Stardew・Terraria・Palworld など）にも型を展開</td>
+<td>型を資産にして入口を広げる</td>
+</tr>
+<tr>
+<td>工業</td>
+<td>Satisfactory・Factorio・Create は、発展の視聴者が付いてから「12時間でどこまで工場を大きくできるか」で試す</td>
+<td>好みは後で回収する</td>
+</tr>
+<tr>
+<td>全体に弱い</td>
+<td>企画・パッケージ・尺のどれが原因か切り分け</td>
+<td>立て直し</td>
+</tr>
+</tbody>
+</table></div>
+<p>投機枠（新作）は10本のうち1〜2本まで。</p>
+<h2 id="d-docs-long-term-strategy--4-継続ルール">4. 継続ルール</h2>
+<ul>
+<li>公開後 7／30／90／180／365日で <a class="doclink" href="#d-experiments-results"><code>experiments/RESULTS.md</code></a> に記録</li>
+<li>投稿前に <a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> に仮説を書く</li>
+<li>1本あたりの制作時間と365日後の再生数で、時間の投資効率を見る</li>
+<li>収益化後の維持条件: 90日ごとに長尺2本（満たせる）</li>
+<li><strong>週20時間が続かない場合は、間隔を戻す</strong>（燃え尽きて止まるのが一番の損失）</li>
+</ul>
+</article>
+<article id="d-docs-originality" hidden><div class="src">docs/ORIGINALITY.md</div>
+<h1 id="d-docs-originality--パクリ防止ルール">パクリ防止ルール</h1>
+<p>作成: 2026-10-08。ユーザー指示: <strong>「パクリにならないようにだけは気をつけて。今までのも含めて」</strong></p>
+<p>参考にした4本（文字起こし）:</p>
+<ol>
+<li>ふつうのくま企画 ×ゆるめのまりさ「0からYouTubeを始めて〜」（検証企画）</li>
+<li>Among Us 闇鍋（プレイヤー役＋霊夢＋魔理沙、コラボの生声）</li>
+<li>Minecraft 飛行船MOD（9人マルチ、主人公＋ツッコミ）</li>
+<li>Among Us 闇鍋（別の投稿者視点。2と同じコラボ仲間。主人公の心の声＋ツッコミ、コラボの生声）</li>
+</ol>
+<p>※ 2と4は同じ仲間内のコラボなので、実質3系統。</p>
+<h2 id="d-docs-originality--線引き">線引き</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>区分</th>
+<th>例</th>
+<th>扱い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>借りてよい：ジャンル全体の技法</strong></td>
+<td>セリフを短くする／ボケとツッコミ／メタ・自虐／天丼という手法そのもの／冒頭で最終形を見せる／伏線回収／看板コーナーを持つこと／ゲームの説明を1〜2文で済ませる／「自信満々の宣言→すぐ失敗」（フラグと回収）／「定期」「草」「ゲーミング」などの一般的なネットスラング</td>
+<td>使ってよい。ゆっくり実況やお笑い全般で使われている型</td>
+</tr>
+<tr>
+<td><strong>借りてよい：戦略の原則</strong></td>
+<td>長く遊ばれる名作を選ぶ／長尺／ショートに頼らない／サムネは一目で誰の動画か分かる型／データで修正</td>
+<td>使ってよい（<a class="doclink" href="#d-docs-channel-strategy"><code>CHANNEL_STRATEGY.md</code></a> §9.3）</td>
+</tr>
+<tr>
+<td><strong>借りてはいけない：固有の言い回し・ネタ</strong></td>
+<td>下の「使用禁止リスト」</td>
+<td><strong>使わない。似た言い回しにも寄せない</strong></td>
+</tr>
+<tr>
+<td><strong>借りてはいけない：固有の企画</strong></td>
+<td>「0から100日でいくら稼げるか」の検証企画／飛行船（空飛ぶ拠点）で旅をする企画／役職ごとのティア評価コーナー</td>
+<td>使わない</td>
+</tr>
+<tr>
+<td><strong>借りてはいけない：組み合わせ</strong></td>
+<td>同じゲーム × 同じ企画 × 同じ並び（例: Stardew→Palworld→Terraria）</td>
+<td>使わない（§9 で変更済み）</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-docs-originality--使用禁止リスト固有の言い回しネタ">使用禁止リスト（固有の言い回し・ネタ）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>出典</th>
+<th>使わないもの</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>「ゆっくり実況を守りたい」系の目的の打ち出し方／検証企画の構成そのもの／「反面教師」「大学生基準」の天丼</td>
+</tr>
+<tr>
+<td>2・4</td>
+<td>「人外の力集結」／「幻の4試合目」（尺調整ネタ）／途中で唐突に「高評価よろしく」→「本日のノルマ達成」／「〜大学定期」（架空の研究）／役職の「ティア評価」コーナー／「お猿さんゲーミング」／「サムネ回収です」／「勝ち確の時間が好き」系の決め台詞／締めの定型文「この辺りで終わりにしたいと思います」／特定メンバーのいじり（回線落ち・ミュート・初手キル等）の型</td>
+</tr>
+<tr>
+<td>3</td>
+<td>「〜に涙が止まらない」／「人の心ないんか」／「ボロカス号」のような、乗り物をボロボロの名前で呼び続けるネタ／村人を「山猿」、村を「物資補給所」と呼ぶネタ／「空族団」「村破壊検定」／「群馬県が独立」系の脱線ネタそのもの／冒頭の「旅は魂を震わせる。しかし家でゴロゴロも〜」の型</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-docs-originality--公開前チェック毎回">公開前チェック（毎回）</h2>
+<ul>
+<li>[ ] 台本に使用禁止リストの言い回しがないか（似た言い回しも含む）</li>
+<li>[ ] 冒頭・締め・看板コーナーが、参考4本のどれかと同じ形になっていないか</li>
+<li>[ ] ゲーム・企画・並びの3つが、参考にしたチャンネルと重なっていないか</li>
+<li>[ ] サムネとタイトルの型が、参考にしたチャンネルと似ていないか</li>
+<li>[ ] 新しく参考にした動画が増えたら、このリストに追記する</li>
+</ul>
+<h2 id="d-docs-originality--このチャンネル独自のもの守る育てる">このチャンネル独自のもの（守る・育てる）</h2>
+<ul>
+<li>シリーズの型「初見・ゼロから12時間で、どこまで発展できるか」</li>
+<li>看板コーナー「決算」（参考4本にない）</li>
+<li>決め文句：霊夢「必要経費です」／魔理沙「決算に響くぞ」</li>
+<li>毎回の「霊夢通り」（自分の名前をつけた道が毎回失敗の元凶になる）</li>
+<li>締めの定型文（独自に作る。例：霊夢「以上、今期の決算でした」魔理沙「来期はまともな市長でありますように」）</li>
+</ul>
+<h2 id="d-docs-originality--これまでの成果物の点検2026-10-08">これまでの成果物の点検（2026-10-08）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>対象</th>
+<th>判定</th>
+<th>対応</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初期の計画（Stardew→Palworld→Terraria）</td>
+<td>✕ 出典1と並びが重なる</td>
+<td>2026-10-07 に変更済み（<a class="doclink" href="#d-docs-channel-strategy"><code>CHANNEL_STRATEGY.md</code></a> §9）</td>
+</tr>
+<tr>
+<td>計画 v3（Cities II→RimWorld→…、12時間＋決算）</td>
+<td>○ 参考4本と重ならない</td>
+<td>そのまま</td>
+</tr>
+<tr>
+<td>キャラの役割（主人公ボケ＋相方ツッコミ）</td>
+<td>○ ジャンル全体の型</td>
+<td>そのまま</td>
+</tr>
+<tr>
+<td>「霊夢通り」（物に名前をつけて天丼）</td>
+<td>△ 手法は出典3と同じ</td>
+<td>手法は一般的なので可。ただし「ボロボロの名前で呼ぶ」「乗り物」にはしない。<strong>自分の名前をつけた道が自分の首を絞める</strong>という独自の方向で使う</td>
+</tr>
+<tr>
+<td>台本 v4 の冒頭「人はなぜ街を作るのか→税金のため」</td>
+<td>△ 「壮大な問い→俗な落ち」の型が出典3の冒頭と近い</td>
+<td><strong>v5 で別の冒頭に差し替え</strong></td>
+</tr>
+<tr>
+<td>台本 v4 の締め「高評価しないと次も渋滞させる」</td>
+<td>△ 「高評価」を使うネタは出典2に近い</td>
+<td><strong>v5 で独自の締めの定型文に差し替え</strong></td>
+</tr>
+<tr>
+<td>テロップを3人目のツッコミにする</td>
+<td>○ 出典2は声で入れている。テロップでやるのは独自の工夫</td>
+<td>そのまま</td>
+</tr>
+</tbody>
+</table></div>
+</article>
+<article id="d-docs-video-format" hidden><div class="src">docs/VIDEO_FORMAT.md</div>
+<h1 id="d-docs-video-format--動画フォーマット視聴体験を見える形で統一する">動画フォーマット（視聴体験を見える形で統一する）</h1>
+<p>C1 の対策: 「視聴体験の統一」を、視聴者に<strong>見える</strong>形にする。</p>
+<h2 id="d-docs-video-format--尺">尺</h2>
+<ul>
+<li>目標 45〜70分。60分に合わせるために素材を残さない</li>
+</ul>
+<h2 id="d-docs-video-format--成長物語の構成全動画共通">成長物語の構成（全動画共通）</h2>
+<ol>
+<li><strong>0:00</strong> 最終形を見せる</li>
+<li><strong>0:30</strong> 開始地点（何もない）</li>
+<li>序盤: 最初の小さな成功</li>
+<li>中盤: 規模拡大</li>
+<li><strong>問題発生</strong>（資源不足・渋滞・電力不足・設計ミス・敵・コスト増）</li>
+<li>改善 → さらに巨大化</li>
+<li>最終目標達成</li>
+<li>成果を<strong>数字</strong>で見せる（生産量・人口・面積・処理能力・資源量・総プレイ時間）</li>
+<li>次動画への導線</li>
+</ol>
+<h2 id="d-docs-video-format--見える統一案ユーザー確認後に確定">見える統一（案。ユーザー確認後に確定）</h2>
+<ul>
+<li>シリーズ名（例: 「〇〇を全部自動化」）を決め、サムネ・タイトルに共通のラベルを入れる</li>
+<li>サムネ: 左=小さい／Before、右=巨大／After の構図を固定</li>
+<li>冒頭: 最終形→開始地点の切り替えを固定</li>
+<li>終盤: 数字表示（同じ画面レイアウト）</li>
+</ul>
+<h2 id="d-docs-video-format--品質チェック公開前">品質チェック（公開前）</h2>
+<ul>
+<li>[ ] タイトルだけで「何がすごいか」が分かる（専門用語・バージョンなし）</li>
+<li>[ ] サムネの文字が少なく、ゲームを知らなくても意味が伝わる</li>
+<li>[ ] 最初の30秒で最終形と開始地点が出る</li>
+<li>[ ] 問題発生が少なくとも2回あり、解決が映っている</li>
+<li>[ ] 数字で成果を出している</li>
+<li>[ ] 概要欄・チャプター・字幕に検索語（ゲーム名＋やったこと）が入っている（F3対策）</li>
+<li>[ ] 次動画への導線がある</li>
+<li>[ ] 仮説を <a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> に書いた</li>
+</ul>
+<h2 id="d-docs-video-format--制作中の判断基準">制作中の判断基準</h2>
+<ul>
+<li>「この作業は動画に必要か？」を撮影中も確認（15時間・30時間時点でチェック）</li>
+<li>目標から外れた寄り道は、面白くてもカットかサブ動画候補にする</li>
+</ul>
+<h2 id="d-docs-video-format--シリーズの型2026-10-07-決定方向">シリーズの型（2026-10-07 決定方向）</h2>
+<p><strong>「初見・ゼロから12時間で、どこまで発展できるか」＋最後に「決算」</strong></p>
+<ul>
+<li>12時間（実時間）で区切る → 初見でもプレイ時間がぶれない・制作の時間予算と一致・どのゲームでも同じ型</li>
+<li>決算: 毎回同じ画面レイアウトで、0時間目と12時間目の数字（人口・資産・規模など）を発表。チャンネルの看板</li>
+<li>サムネ: 型を固定（キャラ位置・配色・フォント・「12時間」のロゴ）。左に0h、右に12h</li>
+</ul>
+<h2 id="d-docs-video-format--実況スタイル2026-10-07-検討--c-で決定方向">実況スタイル（2026-10-07 検討 → C で決定方向）</h2>
+<p>前提: 編集は<strong>完成1分=1時間</strong>で見積もる（ユーザー了承）。キャラは未定。「1人で淡々」「掛け合い・ボケツッコミ」どちらも可。</p>
+<h3 id="d-docs-video-format--案">案</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>案</th>
+<th>内容</th>
+<th>長所</th>
+<th>短所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 1人で淡々</td>
+<td>1キャラがプレイしながら淡々と話す</td>
+<td>セリフが少なく編集が軽い。テンポよく見せやすい</td>
+<td>初見の「分からない」を説明する相手がいない。ゆっくりの強み（掛け合い）を使わない</td>
+</tr>
+<tr>
+<td>B. 掛け合い中心</td>
+<td>2キャラのボケ・ツッコミで進める</td>
+<td>ゆっくりらしい。キャラが愛されやすい</td>
+<td>セリフ（台本）が増え、編集が重くなりやすい</td>
+</tr>
+<tr>
+<td><strong>C（推奨）. 初見の主役＋ツッコミ兼解説役</strong></td>
+<td>主役が初見でプレイし、もう1人がたまにツッコミ・ゲームの仕組みを補足する。主役のセリフ中心で、掛け合いは山場に絞る</td>
+<td>初見企画と噛み合う（主役の「知らない」を相方が拾い、ゲームを知らない視聴者への説明にもなる）。参考例の「淡々＋ボケツッコミ」と同じ型。セリフ量を山場に寄せれば編集時間を抑えられる</td>
+<td>相方の役割を固定しないと、ただの解説動画になる</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-video-format--キャラ選びの観点">キャラ選びの観点</h3>
+<ul>
+<li>参考例: <strong>サムネで一番大事なのは「一目で誰の動画か分かる」</strong>。定番キャラ（霊夢・魔理沙）だけでは他のチャンネルと区別しにくい → 立ち絵の位置・配色・フォントを固定して「型」で見分けてもらう</li>
+<li>立ち絵: 定番の素材（費用ゼロ・すぐ使える）か、オリジナルの立ち絵（費用がかかるが見分けやすい。参考例はオリジナル）</li>
+<li><strong>権利の確認（要調査）</strong>: 東方Projectの二次創作ガイドライン、ゆっくりボイス（音声ライブラリ）の収益化動画での利用条件、立ち絵素材の利用規約。収益化前に確認する</li>
+</ul>
+<h2 id="d-docs-video-format--キャラ候補2026-10-07-提案">キャラ候補（2026-10-07 提案）</h2>
+<p>前提: スタイルは「初見の主役（淡々と進める）＋ツッコミ兼解説役」。シリーズの型は「初見・ゼロから12時間＋決算」。参考例の主役は魔理沙（オリジナル立ち絵）なので、<strong>魔理沙を主役にすると真似に見えやすい</strong>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>案</th>
+<th>主役（初見・プレイ）</th>
+<th>相方（ツッコミ・解説）</th>
+<th>長所</th>
+<th>短所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 王道</td>
+<td>霊夢</td>
+<td>魔理沙</td>
+<td>一目でゆっくり実況と分かる。視聴者が慣れている</td>
+<td>一番多い組み合わせで埋もれやすい。参考例とも近い</td>
+</tr>
+<tr>
+<td>2. 真面目が空回り</td>
+<td>妖夢</td>
+<td>幽々子</td>
+<td>真面目な主役が初見で計画を崩す姿が笑いになる。主役としては珍しい</td>
+<td>幽々子は解説役より「食べ物でボケる」役になりやすい</td>
+</tr>
+<tr>
+<td><strong>3. 推奨: 紅魔館の決算</strong></td>
+<td><strong>咲夜</strong></td>
+<td><strong>パチュリー</strong>（＋レミリアは冒頭と決算だけ）</td>
+<td>下記</td>
+<td>キャラが3人になる（レミリアのセリフは最小限にして編集量を抑える）</td>
+</tr>
+<tr>
+<td>4. 技術者</td>
+<td>にとり</td>
+<td>文</td>
+<td>後で工業ゲームに広げるとき自然</td>
+<td>主役としての知名度がやや低い</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-docs-video-format--推奨案3の理由">推奨（案3）の理由</h3>
+<ul>
+<li><strong>型と設定がつながる</strong>:
+<ul>
+<li>咲夜は「時間を操る」キャラ → 「12時間」の制限と結びつく（サムネに時計のマーク）</li>
+<li>紅魔館の家計を預かるメイド → 最後の**「決算」をお嬢様に報告する**流れが自然</li>
+<li>冒頭でレミリアが「12時間で人口○万の街を作りなさい」と命令 → <strong>毎回の目標に物語上の理由がつく</strong></li>
+</ul>
+</li>
+<li><strong>スタイルに合う</strong>: 咲夜の「淡々・瀟洒」な語り口が、淡々型の主役に合う。完璧なメイドが初見で失敗する落差が笑いになる</li>
+<li><strong>解説役が自然</strong>: パチュリーは知識人なので、ゲームの仕組みの補足を言わせても違和感がない。ツッコミも冷静で短く済む</li>
+<li><strong>見分けやすい</strong>: 銀・青・赤の配色と時計のマークを、サムネ・決算画面の固定の型にできる</li>
+<li>毎回の流れ: 【冒頭】レミリアの命令 →【本編】咲夜が初見でプレイ、パチュリーが補足とツッコミ →【決算】咲夜が数字を報告、レミリアが評価</li>
+</ul>
+<h3 id="d-docs-video-format--注意">注意</h3>
+<ul>
+<li>東方キャラの設定を借りるので、東方Projectの二次創作ガイドラインの範囲で使う（<a class="doclink" href="#d-research-rights"><code>research/RIGHTS.md</code></a>）</li>
+<li>キャラ設定に寄りすぎると「東方ファン向け」に見える → 設定は冒頭と決算だけに使い、本編はゲーム中心</li>
+<li>立ち絵の素材は、商用・収益化の可否を規約で確認してから選ぶ</li>
+</ul>
+<h2 id="d-docs-video-format--チャンネルの雰囲気2026-10-07-提案-v2上のキャラ候補を置き換える">チャンネルの雰囲気（2026-10-07 提案 v2。上の「キャラ候補」を置き換える）</h2>
+<p>ユーザーの条件: 1人／2人の掛け合い／3人以上のわちゃわちゃ、どれでも可。VOICEROID でも可。ゆっくりで2人以上なら<strong>霊夢と魔理沙は外せない</strong>。チャンネルの雰囲気になるので、いい感じに決めてほしい。</p>
+<h3 id="d-docs-video-format--人数の比較">人数の比較</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>形</th>
+<th>合う点</th>
+<th>合わない点</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1人で黙々</td>
+<td>編集が一番軽い</td>
+<td>初見の「分からない」を拾う相手がいない。60分を1人で持たせるのは上級者向け。<strong>参考例と同じ型</strong></td>
+<td>×</td>
+</tr>
+<tr>
+<td><strong>2人の掛け合い</strong></td>
+<td>初見の主役＋ツッコミ役が初見企画に合う。編集量は中くらい。ながら見で聞きやすい</td>
+<td>ゆっくりの定番で埋もれやすい → 役割と看板コーナーで差を出す</td>
+<td><strong>◎ 基本</strong></td>
+</tr>
+<tr>
+<td>3人以上のわちゃわちゃ</td>
+<td>キャラが愛されやすい</td>
+<td>セリフ量が増え、2週間に1本が遠のく。長時間のながら見には騒がしい</td>
+<td>△ 看板コーナーだけ</td>
+</tr>
+</tbody>
+</table></div>
+<p>声: <strong>ゆっくり（YMM4）</strong>。理由: 「ゆっくり実況」として見つけてもらえる。YMM4 は既に使う予定。VOICEROID／VOICEVOX は差別化にはなるが「ゆっくり」の括りから外れる（※ YMM4 は声に関係なく収益化に AquesTalk のライセンスが必要とされるため、声を変えても費用は減らない。<a class="doclink" href="#d-research-rights"><code>research/RIGHTS.md</code></a>）</p>
+<h3 id="d-docs-video-format--推奨-霊夢と魔理沙のゼロから発展させる経営実況">推奨: 「霊夢と魔理沙の、ゼロから発展させる経営実況」</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>役</th>
+<th>キャラ</th>
+<th>役割</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主役（初見でプレイ）</td>
+<td><strong>霊夢</strong></td>
+<td>大ざっぱで、お金に目がない（貧乏巫女・賽銭箱のネタ）。初見で勢い任せに街を広げて失敗する</td>
+</tr>
+<tr>
+<td>相方（ツッコミ・解説）</td>
+<td><strong>魔理沙</strong></td>
+<td>ゲームの仕組みを補足しつつ、霊夢の無茶にツッコむ。計画派</td>
+</tr>
+<tr>
+<td>決算の司会（決算コーナーだけ）</td>
+<td><strong>射命丸 文</strong></td>
+<td>最後に「文々。新聞 号外」として結果を発表する。見出し＋数字の画面が、毎回の看板になる</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>この形にする理由</strong></p>
+<ul>
+<li><strong>お金と発展のゲームに、霊夢の「貧乏・お金好き」が直結する</strong>: 毎回の見どころが「霊夢の街は儲かるのか」になり、最後の決算で「賽銭箱より儲かったか」のような決め台詞が作れる</li>
+<li><strong>主役は霊夢</strong>: 参考例の主役は魔理沙なので、逆にして被りを避ける</li>
+<li><strong>3人目は決算だけ</strong>: 文のセリフは1本あたり数十秒〜1分程度。わちゃわちゃ感を少し出しつつ、編集の量は増やさない</li>
+<li><strong>見分けやすい</strong>: 「号外」の決算画面（新聞の見出し風）をサムネにも使える。赤白（霊夢）＋新聞の白黒＋「12時間」の時計マークを固定の型にする</li>
+</ul>
+<h3 id="d-docs-video-format--1本の流れ">1本の流れ</h3>
+<ol>
+<li>冒頭（30秒）: 12時間後の街の俯瞰 →「何もない土地から12時間、初見でどこまで行けるか」</li>
+<li>本編: 霊夢が淡々と（ときどき暴走して）進め、魔理沙が補足とツッコミ。単調な作業は早送り＋BGMのみ</li>
+<li>山場（失敗・急成長）だけ掛け合いを厚くする</li>
+<li>決算: 文の「号外」で数字を発表 → 霊夢の一言で締め</li>
+</ol>
+<h3 id="d-docs-video-format--編集を軽くするための決め事">編集を軽くするための決め事</h3>
+<ul>
+<li>セリフは山場に集中させ、作業パートは早送りとテロップ1行で流す</li>
+<li>決算画面・冒頭・締めは毎回同じテンプレートを使い回す</li>
+<li>霊夢と魔理沙の口調・決め台詞を決めておき、台本を書く時間を減らす</li>
+</ul>
+<h3 id="d-docs-video-format--代案">代案</h3>
+<ul>
+<li><strong>霊夢＋魔理沙のみ（文なし）</strong>: 一番軽い。決算は霊夢と魔理沙で発表</li>
+<li><strong>VOICEVOX（ずんだもん等）で同じ構成</strong>: ゆっくり以外で差別化したい場合。ただし「ゆっくり実況」の視聴者から外れる</li>
+</ul>
+<h2 id="d-docs-video-format--チャンネルの雰囲気-v32026-10-07v2-を置き換える">チャンネルの雰囲気 v3（2026-10-07。v2 を置き換える）</h2>
+<p>ユーザー: <strong>東方原作の設定に準拠しなくてよい</strong>。→ キャラの性格は原作ではなく、<strong>このチャンネルの企画に役立つように決める</strong>。原作ネタ（賽銭箱・新聞など）に頼らないので、東方を知らない人にも伝わる。</p>
+<h3 id="d-docs-video-format--2人の性格勢い対計画">2人の性格（「勢い」対「計画」）</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>霊夢（主役・初見でプレイ）</th>
+<th>魔理沙（相方・解説とツッコミ）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>性格</td>
+<td><strong>勢い派</strong>。とにかく大きくしたい。数字が増えると機嫌が良くなる。考えるより先に手が動く</td>
+<td><strong>計画派</strong>。効率と数字にうるさい。仕組みに詳しく、霊夢の無茶を止めようとする（たいてい止められない）</td>
+</tr>
+<tr>
+<td>担当</td>
+<td>巨大化・拡張・無茶な挑戦</td>
+<td>解説・最適化の提案・問題の原因の説明</td>
+</tr>
+<tr>
+<td>決め台詞の例</td>
+<td>「広げれば何とかなるでしょ」</td>
+<td>「だから言ったんだぜ」</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>発展シミュのいちばん面白い対立「早く大きくするか、計画的に作るか」を、2人の性格にそのまま割り当てる</strong>。初見の失敗も「霊夢の勢いの結果」として自然に見せ場になる</li>
+<li>3人目は置かない（編集を軽くし、2人の関係をチャンネルの顔にする）。特別回でゲストを出すのは後で検討</li>
+</ul>
+<h3 id="d-docs-video-format--決算看板コーナー">決算（看板コーナー）</h3>
+<ul>
+<li>毎回同じ「決算書」風の画面。<strong>魔理沙が数字を読み上げ、霊夢が一言で締める</strong></li>
+<li>「0時間目 → 12時間目」の数字と、「勢いで得したこと／計画しておけばよかったこと」を1つずつ</li>
+<li>サムネにも同じ決算書のデザインと「12時間」の時計マークを使う</li>
+</ul>
+<h2 id="d-docs-video-format--チャンネルの雰囲気-v42026-10-07v3-の役割を修正">チャンネルの雰囲気 v4（2026-10-07。v3 の役割を修正）</h2>
+<p>ゆっくり実況の文字起こし3本の分析（<a class="doclink" href="#d-research-yukkuri-tone"><code>research/YUKKURI_TONE.md</code></a>）を反映。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>霊夢（主人公）</th>
+<th>魔理沙（相方）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>役割</td>
+<td><strong>ボケ・悪役寄り</strong>。勢いで街を広げ、市民をコスト扱いする。ゲームの仕組みは自分で1〜2文で説明する</td>
+<td><strong>ツッコミ・良心</strong>。解説はほぼしない。霊夢の無茶を止める（止まらない）</td>
+</tr>
+<tr>
+<td>決め文句（候補）</td>
+<td>「必要経費です」</td>
+<td>「決算に響くぞ」</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>道やエリアに名前をつけて毎回のキャラにする（例: 毎回渋滞の元凶になる「霊夢通り」）</li>
+<li>1本に1回は自業自得の大事故を山場にする</li>
+<li>冒頭のネタを決算で回収する</li>
+</ul>
+<h3 id="d-docs-video-format--パクリ防止2026-10-08">パクリ防止（2026-10-08）</h3>
+<p>参考にした動画の固有の言い回し・企画・コーナーは使わない。使用禁止リストと公開前チェックは <a class="doclink" href="#d-docs-originality"><code>docs/ORIGINALITY.md</code></a>。締めの定型文は独自のもの（霊夢「以上、今期の決算でした」魔理沙「来期はまともな市長でありますように」）を使う。</p>
+</article>
+<article id="d-experiments-hypotheses" hidden><div class="src">experiments/HYPOTHESES.md</div>
+<h1 id="d-experiments-hypotheses--仮説ログ">仮説ログ</h1>
+<p>投稿前に「なぜ伸びると思ったか」を書く。事後に <a class="doclink" href="#d-experiments-results"><code>RESULTS.md</code></a> へ結果と正誤を書く。</p>
+<h2 id="d-experiments-hypotheses--戦略レベルの仮説">戦略レベルの仮説</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>仮説</th>
+<th>検証方法</th>
+<th>状態</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S-01</td>
+<td>別ゲームでも「自動化・巨大化」という体験が共通なら、視聴者は動画間を移動する</td>
+<td>他の動画を視聴した視聴者（001↔002↔003）</td>
+<td>未検証</td>
+</tr>
+<tr>
+<td>S-02</td>
+<td>一般語のタイトル（「手作業ゼロの巨大工場」）は専門用語のタイトルより、ゲーム未経験者のCTRが高い</td>
+<td>流入元・CTR・新規視聴者比率</td>
+<td>未検証</td>
+</tr>
+<tr>
+<td>S-03</td>
+<td>企画系の長尺でも、検索語を意図して入れれば30日以降の流入が残る</td>
+<td>流入元の内訳の推移（30/90/180日）</td>
+<td>未検証</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-experiments-hypotheses--動画ごとの仮説">動画ごとの仮説</h2>
+<h3 id="d-experiments-hypotheses--v1保留001-minecraft-create">（v1・保留）001 Minecraft Create</h3>
+<ul>
+<li>仮説: Minecraft という大きな入口と、完全自動化という分かりやすい欲求を組み合わせれば、Createを知らない人にもクリックされる</li>
+<li>期待する根拠: 競合調査（未了）。需要面ではCreateのDL数が非常に大きい（二次情報）</li>
+<li>反証される場合: CTRが低い／冒頭30秒維持率が低い／新規視聴者が少ない／Create経験者しか見ない</li>
+<li>確認するもの: CTR・30秒維持率・平均視聴率・新規視聴者比率・流入元・002への移動</li>
+</ul>
+<h3 id="d-experiments-hypotheses--v1保留002-factorio">（v1・保留）002 Factorio</h3>
+<ul>
+<li>仮説: 「ハンドクラフト禁止」という縛りが、Factorioを知らない人にも「難しそう・すごそう」を伝え、001の視聴者をより純粋な自動化へ移動させる</li>
+<li>反証される場合: 001→002の移動が少ない／説明パートで離脱が急増する</li>
+</ul>
+<h3 id="d-experiments-hypotheses--v1保留003-cs2-または-satisfactory">（v1・保留）003 CS2 または Satisfactory</h3>
+<ul>
+<li>保留</li>
+</ul>
+<h3 id="d-experiments-hypotheses--v2候補に変更stardew-valley">（v2・候補に変更）Stardew Valley</h3>
+<ul>
+<li>仮説: 長く遊ばれている名作で、「初見・ゼロから・56日」という制限と数字の結果を組み合わせれば、新規チャンネルでもおすすめに乗り、長く再生される</li>
+<li>反証される場合: 公開1週間で伸び始めない（参考例の目安）／冒頭30秒で大きく離脱／同じゲームの後発に埋もれる</li>
+<li>確認するもの: インプレッション・クリック率・30秒維持率・平均視聴時間・流入元・1〜4週の再生の推移</li>
+</ul>
+<h3 id="d-experiments-hypotheses--v3-001-cities-skylines-ii未投稿叩き台">v3 001 Cities: Skylines II（未投稿・叩き台）</h3>
+<ul>
+<li>仮説: 「初見・ゼロから12時間」という分かりやすい制限と、何もない土地→大都市の Before/After、最後の決算（数字）の組み合わせは、街づくりを知らない人にもクリックされ、長く見られる</li>
+<li>チャンネル仮説（S-04）: ゲームが変わっても「12時間＋決算」の型が同じなら、視聴者は次の動画にも移動する（発展という体験での統一）</li>
+<li>反証される場合: 公開1週間で伸び始めない／クリック率が低い（パッケージの問題）／冒頭で離脱（構成の問題）／シミュ好き以外に届かない（客層が狭い）</li>
+<li>確認するもの: インプレッション・クリック率・30秒維持率・平均視聴時間・視聴者の年齢と性別・流入元・2本目への移動</li>
+</ul>
+</article>
+<article id="d-experiments-results" hidden><div class="src">experiments/RESULTS.md</div>
+<h1 id="d-experiments-results--結果ログ">結果ログ</h1>
+<p>仮説（<a class="doclink" href="#d-experiments-hypotheses"><code>HYPOTHESES.md</code></a>）ごとに、結果と「仮説は正しかったか」を記録する。公開後の数値は各動画の <code>postmortem.md</code> が本体で、ここは<strong>知識の要約</strong>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>仮説ID</th>
+<th>動画</th>
+<th>結果（数値と観察）</th>
+<th>正しかったか</th>
+<th>学び</th>
+<th>更新日</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>（まだなし）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-experiments-results--知識ベース確定した学びのみ">知識ベース（確定した学びのみ）</h2>
+<p>（投稿・分析後に、再現性のある学びをここへ移す）</p>
+</article>
+<article id="d-research-competitors" hidden><div class="src">research/COMPETITORS.md</div>
+<h1 id="d-research-competitors--競合分析">競合分析</h1>
+<p>ステータス: <strong>未着手</strong>（YouTube データに接続できていない）。手順と観点だけ先に定義。</p>
+<h2 id="d-research-competitors--分析方針指示md-20phase-3">分析方針（指示.md §20・Phase 3）</h2>
+<ul>
+<li>「ゲームを説明する」動画ではなく、<strong>ゲームを使って企画を成立させる</strong>動画を見る</li>
+<li>構造だけ抽出する。コピーは禁止</li>
+<li>「大手だから伸びた」を疑う: <strong>登録者1万人未満で10万再生以上</strong>の動画を探す</li>
+<li>公開から1年以上経って再生され続けている動画（資産性の根拠）を探す</li>
+</ul>
+<h2 id="d-research-competitors--対象">対象</h2>
+<p>国内（ゆっくり実況を含む）と海外の両方。</p>
+<ul>
+<li>海外: Let's Game It Out / martincitopants / AmbiguousAmphibian / 工業系Minecraft / Factorio / Satisfactory / Cities / KSP 系</li>
+<li>国内: ゆっくり実況での Create / Factorio / CS の長尺企画（未調査）</li>
+</ul>
+<h2 id="d-research-competitors--記録フォーマット動画1本ごと">記録フォーマット（動画1本ごと）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL・公開日・尺</td>
+<td></td>
+</tr>
+<tr>
+<td>登録者数（公開時／現在）</td>
+<td></td>
+</tr>
+<tr>
+<td>再生数（公開直後／現在）</td>
+<td></td>
+</tr>
+<tr>
+<td>流入の推定（検索型かおすすめ型か）</td>
+<td></td>
+</tr>
+<tr>
+<td>タイトルの型</td>
+<td></td>
+</tr>
+<tr>
+<td>サムネの型</td>
+<td></td>
+</tr>
+<tr>
+<td>最初30秒の構造</td>
+<td></td>
+</tr>
+<tr>
+<td>企画の「終了条件」</td>
+<td></td>
+</tr>
+<tr>
+<td>伸びた理由の仮説（企画／パッケージ／チャンネル力）</td>
+<td></td>
+</tr>
+<tr>
+<td>自分に使える構造</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-competitors--必要な作業">必要な作業</h2>
+<ul>
+<li>YouTube Data API キーまたは手動エクスポートを用意する（ユーザー側）</li>
+<li>001/002 の企画ごとに最低10本ずつ分析してから G0 を通す</li>
+</ul>
+<hr>
+<h2 id="d-research-competitors--分析済み取得済みサンプル">分析済み・取得済みサンプル</h2>
+<h3 id="d-research-competitors--s-01-ふつうのくま企画-ゆるめのまりさ検証初心者が0からyoutubeを初めて一体いくら稼げるのかゆっくり実況">S-01 ふつうのくま企画 ×ゆるめのまりさ「【検証】初心者が0からYouTubeを初めて、一体いくら稼げるのか？【ゆっくり実況】」</h3>
+<ul>
+<li>URL: https://youtu.be/PHRqkara4eU（検証動画は 660,669回・高評価2.4万・2026-07-31公開。約60分）</li>
+<li><strong>情報源: ユーザーが貼った文字起こし全文（2026-10-07）</strong>。数値はすべて<strong>投稿者の自己申告</strong>で、YouTubeのデータで裏付けたものではない</li>
+<li>関係: 戦略＝ふつうのくま（「約4年の研究」）。撮影・編集＝協力者「もち」（動画編集の経験なし）。チャンネル＝ゆるめのまりさ（新規）</li>
+<li>期間: 3/20〜6/27 の100日間（企画後も継続）</li>
+</ul>
+<h4 id="d-research-competitors--投稿した6本">投稿した6本</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>投稿日</th>
+<th>ゲーム</th>
+<th>系統</th>
+<th>尺</th>
+<th>狙い（本人の説明）</th>
+<th>結果（本人の申告）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1日目</td>
+<td>Stardew Valley</td>
+<td>2D・牧場スローライフ</td>
+<td>約1時間半</td>
+<td>不朽の名作で長く愛される動画</td>
+<td>6日目800回→8日目4,700回→60日目6.4万→100日目8.9万。<strong>この1本で総再生時間3.7万時間</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>15日目</td>
+<td>Revolution Idle</td>
+<td>インクリメンタル</td>
+<td>短め（尺不足が失敗点）</td>
+<td>系統を意図的に変える／後の名作の前座</td>
+<td>1日5,000回。一時は伸び悩むが、4本目で持ち上がりパルワールドを逆転</td>
+</tr>
+<tr>
+<td>3</td>
+<td>29日目</td>
+<td>Palworld</td>
+<td>3Dオープンワールド</td>
+<td>—</td>
+<td>3Dオープンワールドを開拓</td>
+<td>11日目で2.8万。その後は伸びが鈍化</td>
+</tr>
+<tr>
+<td>4</td>
+<td>50日目</td>
+<td>Cookie Clicker</td>
+<td>インクリメンタルの名作</td>
+<td>普段の半分以下</td>
+<td>2本目と同系統の名作で両方を伸ばす</td>
+<td>11日で5.4万→100日目に9万（最多）→133日目に10万目前</td>
+</tr>
+<tr>
+<td>5</td>
+<td>71日目</td>
+<td>Terraria</td>
+<td>2Dサンドボックス</td>
+<td>約2時間</td>
+<td>Stardewと同じ2Dで相乗効果</td>
+<td>初動はクッキークリッカーの倍</td>
+</tr>
+<tr>
+<td>6</td>
+<td>84日目</td>
+<td>Astroneer</td>
+<td>3D探索・<strong>中身は工業</strong></td>
+<td>—</td>
+<td>3D系でパルワールドを持ち上げる</td>
+<td><strong>相対的に失敗</strong>。実況者が少なくコミュニティが小さい。「アドベンチャーに見えて中身はがっつり工業。見る人を選ぶ」。パルワールドへの波及もなし</td>
+</tr>
+</tbody>
+</table></div>
+<p>100日間の合計: <strong>34.6万回再生／登録者6,000人超／インプレッション約800万弱</strong>。<br>
+133日目（7/30）: 7月は Core Keeper を投稿し「調子もよく」。</p>
+<h4 id="d-research-competitors--収益本人の申告">収益（本人の申告）</h4>
+<ul>
+<li>3本目を投稿した日に収益化を申請 → <strong>2日で承認</strong>（本人が他に収益化チャンネルを持っていたのが理由と推測。「参考にしないで」と明言）</li>
+<li>4/20〜6/30（72日）で <strong>¥247,522</strong>（1日あたり約¥3,400。4月は約¥2,500/日、5月は約¥3,700/日）</li>
+<li>6月は1本しか投稿せず不調でも、5月から大きく落ちなかった（過去動画が回り続ける＝資産性）</li>
+<li>再生単価の体感: <strong>1時間半の尺で1再生あたり約1円</strong>。視聴者の年齢層で0.3〜3円まで振れる</li>
+</ul>
+<h4 id="d-research-competitors--戦略の主張本人の主張根拠は経験則が中心">戦略の主張（本人の主張。根拠は経験則が中心）</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>主張</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>題材</td>
+<td>流行ではなく「今も伸びている不朽の名作」（Minecraft・ポケモン・Undertale・Stardew）。流行に乗ると、その流行の寿命が自分の寿命になる</td>
+</tr>
+<tr>
+<td>ショートはやらない</td>
+<td>ショートは爆発後に平坦で、投稿をやめると収益が消える。長尺は休んでも収益が落ちにくい</td>
+</tr>
+<tr>
+<td><strong>最初の3〜5本で方向性が決まる</strong></td>
+<td>AIは「この動画を見た人に似た人」に次の動画を勧める。最初に同じゲームを3本出すとその層で固まる。<strong>最初は意図的に系統を変え、「ゲーム実況」という広い括りで認識させる</strong></td>
+</tr>
+<tr>
+<td>開拓→名作で持ち上げる</td>
+<td>新しい系統の動画を出した後、同系統の名作を出すと前の動画も伸びる（Revolution Idle→Cookie Clicker）。<strong>系統が違うと波及しない</strong>（Astroneer→Palworld）</td>
+</tr>
+<tr>
+<td>尺</td>
+<td>「ある程度の質があって尺がきちんとしてれば基本は伸びる」「尺が足りて伸びないのは8割が質の問題」「優先度は尺の方がかなり大切」。ただし最多再生のCookie Clickerは短め</td>
+</tr>
+<tr>
+<td>初動の目安</td>
+<td>1週間以内に伸びなければ質に問題がある</td>
+</tr>
+<tr>
+<td>検索流入はわずか</td>
+<td>Stardewの検索流入は<strong>全体の0.9%</strong>。ほぼおすすめ経由</td>
+</tr>
+<tr>
+<td>視聴者</td>
+<td>男性の方が長く見るが反応は少なめ。長く見られる動画には男性向けの方が適する。年齢層は再生単価に直結</td>
+</tr>
+<tr>
+<td>投稿間隔</td>
+<td>狙った層なら間が空いても問題ない。2〜3週間に1本</td>
+</tr>
+<tr>
+<td>サムネ・タイトル</td>
+<td><strong>サムネで一番大事なのは「一目で誰の動画か分かる」こと</strong>。タイトルは短く、何をしたか分かるように。ゲーム名は後ろでよい</td>
+</tr>
+<tr>
+<td>スタイル</td>
+<td>VOICEROIDのRTA・縛り実況（1人が淡々と企画をこなす）を参考にし、ゆっくりのボケ・ツッコミを足した</td>
+</tr>
+<tr>
+<td>差別化</td>
+<td>「そこでしか得られないもの」が愛される理由。個性を掛け合わせる（例: 可愛い×すごいゲーム実況）。「マイクラゆっくりが飽和して伸びないのではなく、そこでしか見られないマイクラゆっくりがないから伸びない」</td>
+</tr>
+<tr>
+<td>制作コスト</td>
+<td><strong>ゆっくり実況は完成1分に約1時間</strong>。例: 撮影50h＋90分の編集90h＝140h。最低賃金換算で約14万円 → 約14万回再生で元が取れる。最初の半年〜1年は赤字覚悟（株・不動産に近い）</td>
+</tr>
+<tr>
+<td><strong>工業について</strong></td>
+<td><strong>「工業の名作といえばFactorioやMinecraftのMODが大きそうだが、そもそも工業は伸ばすのが難しい類なのでやるかは微妙」「やっていることが複雑すぎて、短い時間で分かりやすく見せるのが難しい」</strong>（56:04）</td>
+</tr>
+<tr>
+<td>季節</td>
+<td>再生が伸びにくい春に検証した。夏休みなら収益はさらに大きくなる</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="d-research-competitors--割り引くべき点このまま真似できない理由">割り引くべき点（このまま真似できない理由）</h4>
+<ol>
+<li><strong>純粋な初心者ではない</strong>: 戦略は4年研究した人気投稿者。1本目は本人が録画した素材。収益化の承認も本人の実績で早まった可能性が高い</li>
+<li><strong>既存視聴者の流入</strong>: 本人の視聴者が800回の時点で気づいてコメントしていた（本人は削除）。初動の一部に影響した可能性</li>
+<li><strong>制作量が違う</strong>: 2〜3週間に1本、1時間半〜2時間の動画。完成1分=1時間なら<strong>1本90〜120時間を2〜3週で</strong>＝週30〜60時間。こちらの週12時間では再現できない</li>
+<li><strong>追随者との競合</strong>: 66万人が見た動画で「Stardew・Cookie Clicker・Terraria が伸びる」と公開された。同じゲームのゆっくり実況が増える可能性が高い（後発は不利）</li>
+<li><strong>n=1・自己申告</strong>: 成功した1例。似た戦略で失敗した例は見えていない</li>
+</ol>
+<h4 id="d-research-competitors--自分たちに使える構造コピーではなく構造の抽出">自分たちに使える構造（コピーではなく構造の抽出）</h4>
+<ul>
+<li>不朽の名作を選ぶ／ショートに頼らない／長尺／初期は系統を変える／同系統の名作で前の動画を持ち上げる／サムネは「誰の動画か」を最優先</li>
+<li>「そこでしか得られないもの」= こちらは <strong>「ゼロからシステムを使い倒して、極端に発展・巨大化させる」</strong> を候補にする（<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §7）</li>
+</ul>
+<h4 id="d-research-competitors--確認すること">確認すること</h4>
+<ul>
+<li>動画の実際の尺（2・4・6本目）</li>
+<li>6本それぞれの平均視聴時間と維持率（未公開）</li>
+<li>「最初の3〜5本」の主張が他チャンネルでも成り立つか</li>
+</ul>
+</article>
+<article id="d-research-data-access" hidden><div class="src">research/DATA_ACCESS.md</div>
+<h1 id="d-research-data-access--データ取得の制約と解決策">データ取得の制約と解決策</h1>
+<p>調査日: 2026-10-07</p>
+<h2 id="d-research-data-access--動画が見られない理由結論">動画が見られない理由（結論）</h2>
+<p><strong>このクラウド環境のネットワーク設定（egress policy）が、YouTube のドメインを許可していないため。</strong> 動画が非公開・削除されているわけではない。</p>
+<h3 id="d-research-data-access--確認した事実">確認した事実</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>確認</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>環境内のプロキシ</td>
+<td>正常に動作（<code>/__agentproxy/status</code> で異常なし）</td>
+</tr>
+<tr>
+<td>youtu.be / www.youtube.com / m.youtube.com / youtube.com / i.ytimg.com</td>
+<td><strong>ゲートウェイが CONNECT に 403</strong>（ポリシーによる拒否）</td>
+</tr>
+<tr>
+<td>代替フロントエンド（yewtu.be, inv.nadeko.net, piped.video）、noembed.com</td>
+<td>同じく 403</td>
+</tr>
+<tr>
+<td>SteamDB / Steam Charts / Steamストア / Steam API</td>
+<td>403（以前の「Steam API が空応答」も同じ原因）</td>
+</tr>
+<tr>
+<td>Google Trends / Reddit</td>
+<td>403</td>
+</tr>
+<tr>
+<td>WebFetch（ページ取得ツール）</td>
+<td>同じポリシーの下で動くため youtu.be などは EGRESS_BLOCKED</td>
+</tr>
+<tr>
+<td><strong>www.googleapis.com（YouTube Data API v3）</strong></td>
+<td><strong>到達できる</strong>。キーなしで呼ぶと「API Key が必要」（403 PERMISSION_DENIED）が返る＝キーがあれば使える</td>
+</tr>
+<tr>
+<td>pypi.org</td>
+<td>到達できる（yt-dlp などのツールは入れられる）</td>
+</tr>
+<tr>
+<td>Web検索</td>
+<td>使える（別経路）。ただし記事の要約しか得られず、一次情報の確認ができない</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-data-access--解決策">解決策</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>できるようになること</th>
+<th>できないこと</th>
+<th>ユーザー側の作業</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. <strong>YouTube Data API キー</strong>を環境に設定（推奨・最小）</td>
+<td>動画・チャンネルの統計（再生数・登録者数・公開日・尺・タイトル・概要欄・タグ）、検索結果の一覧、コメント。競合分析（登録者が少ないのに再生が多い動画探し）が自動化できる</td>
+<td>動画本編・字幕の中身は取れない（字幕のダウンロードは動画の所有者の権限が必要）</td>
+<td>Google Cloud でキーを発行し、環境変数（例: <code>YOUTUBE_API_KEY</code>）として設定</td>
+</tr>
+<tr>
+<td>B. ネットワーク設定で <strong>YouTube のドメインを許可</strong></td>
+<td>ページの取得、yt-dlp で字幕（自動字幕を含む）の取得 → 動画の中身を要約・構造抽出できる</td>
+<td>クラウドのIPは YouTube に「ボットでは？」と弾かれることがあり、確実ではない</td>
+<td>環境の Network access で許可ドメインに <code>youtube.com</code>, <code>www.youtube.com</code>, <code>youtu.be</code>, <code>i.ytimg.com</code>, <code>*.googlevideo.com</code> を追加</td>
+</tr>
+<tr>
+<td>C. Steam・Trends のドメインを許可</td>
+<td>同時接続の一次データ</td>
+<td>SteamDB は機械的なアクセスを弾くことが多い</td>
+<td>許可ドメインに <code>api.steampowered.com</code>, <code>store.steampowered.com</code>, <code>steamcharts.com</code> など</td>
+</tr>
+<tr>
+<td>D. 手で貼る（今の方法）</td>
+<td>すぐできる</td>
+<td>手間がかかり、量をこなせない</td>
+<td>字幕・要約・スクショを貼る</td>
+</tr>
+</tbody>
+</table></div>
+<p>設定手順: セッションのタイトルバーにあるクラウド環境のメニュー → Edit → Network access。詳しくは https://code.claude.com/docs/en/cloud-environments#network-access</p>
+<p><strong>推奨</strong>: まず A（APIキー）。競合分析（Phase 3）の大部分はこれで回る。動画の中身が必要なものだけ B を試すか、D で貼る。</p>
+</article>
+<article id="d-research-evidence" hidden><div class="src">research/EVIDENCE.md</div>
+<h1 id="d-research-evidence--根拠の検証主張--データ--判定">根拠の検証（主張 → データ → 判定）</h1>
+<p>取得日: 2026-10-07。凡例: ✅ 複数の出典で一致／⚠️ 単一・二次情報／❌ 根拠なし・未取得。<br>
+このコンテナからは YouTube 本体・SteamDB 等に接続できないため（<a class="doclink" href="#d-research-data-access"><code>DATA_ACCESS.md</code></a>）、出典はWeb検索で見つかった記事。一次情報（YouTube公式ヘルプ・公式ブログ）を開いて確認できたものはない。</p>
+<h2 id="d-research-evidence--判定の一覧">判定の一覧</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>主張</th>
+<th>判定</th>
+<th>要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E1</td>
+<td>長尺（20分以上）の動画は再生時間で有利</td>
+<td>✅ 支持</td>
+<td>2025年の再生時間の57%は20分以上の動画。日本では長尺がYouTube視聴時間の約70%</td>
+</tr>
+<tr>
+<td>E2</td>
+<td>「1時間くらい」が最適</td>
+<td>⚠️ 根拠不足</td>
+<td>長尺有利は支持されるが、60分が30〜40分より良いという直接データは見つからない。1本あたりの総再生時間は30〜50分が最大という分析が1件（単一の出典・本文未確認）</td>
+</tr>
+<tr>
+<td>E3</td>
+<td>収益化には総再生時間4,000時間が必要</td>
+<td>✅ 現行は正しい／<strong>2027-02-01から8,000時間に倍増</strong></td>
+<td>新規申請は登録者1,000人＋直近12か月の総再生8,000時間（またはショート90日2,000万回）。2027-01-31までに参加済みなら現行条件のまま</td>
+</tr>
+<tr>
+<td>E4</td>
+<td>8分以上で中間広告が入れられる</td>
+<td>✅</td>
+<td>2020年に10分→8分へ緩和。2026年も変更なし</td>
+</tr>
+<tr>
+<td>E5</td>
+<td>テレビ画面での視聴が増えている（長尺のながら見に追い風）</td>
+<td>✅（米国・世界）／⚠️（日本）</td>
+<td>米国のYouTube視聴時間の44%超がコネクテッドTV。世界でもTVの割合が28%→35%（2024-01→2025-12）。日本は視聴のピークが21時で「テレビ的」との分析</td>
+</tr>
+<tr>
+<td>E6</td>
+<td>最初の3〜5本でAIがジャンルを認識する</td>
+<td>⚠️ 経験則のみ</td>
+<td>公式データはなし（SEOブログの一般論のみ）。参考例の投稿者も根拠は経験則。ただし主張の中身は「最初は系統を変えて広い括りで認識させる」で、<strong>同じゲームで固めろという意味ではない</strong>（<a class="doclink" href="#d-research-competitors"><code>COMPETITORS.md</code></a> S-01）</td>
+</tr>
+<tr>
+<td>E7</td>
+<td>編集時間（当初の推定は完成1分あたり0.5〜1時間）</td>
+<td>⚠️ <strong>1時間/分を基準に修正</strong></td>
+<td>参考例の投稿者「ゆっくり実況は1分作るのに基本1時間」。一般的な動画編集の目安は0.3〜0.8h/分。ゆっくり実況は上側で見積もる</td>
+</tr>
+<tr>
+<td>E8</td>
+<td>参考例は約1か月で収益化・100日で34.6万回</td>
+<td>⚠️ 自己申告</td>
+<td>文字起こしで確認。ただし収益化の承認が2日だったのは本人の別チャンネルの実績による可能性（本人談）</td>
+</tr>
+<tr>
+<td>E9</td>
+<td>検索流入を設計すれば長期に残る（当方の F3 対策）</td>
+<td>⚠️ <strong>初期は効果が小さい</strong></td>
+<td>参考例の1本目は検索流入が全体の0.9%。初期はほぼおすすめ経由。検索語の設計は「やっておく」程度に格下げ</td>
+</tr>
+<tr>
+<td>E10</td>
+<td>再生単価</td>
+<td>⚠️ 自己申告</td>
+<td>1時間半の動画で1再生あたり約1円。年齢層で0.3〜3円</td>
+</tr>
+<tr>
+<td>E11</td>
+<td>工業系は伸ばしにくい</td>
+<td>⚠️ 経験則＋1例</td>
+<td>参考例の投稿者が明言。工業寄りの Astroneer が6本中で相対的に失敗。ただし Astroneer の不調は「コミュニティが小さい」ことも原因として挙げられており、工業だけの効果とは切り分けられない</td>
+</tr>
+<tr>
+<td>E12</td>
+<td>1本の長尺動画が稼ぐ総再生時間</td>
+<td>⚠️ 自己申告</td>
+<td>Stardew（約1時間半）1本で8.9万回・3.7万時間 → 1再生あたり平均約25分</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-evidence--e3-の影響重要新しく分かったこと">E3 の影響（重要・新しく分かったこと）</h2>
+<ul>
+<li>今日（2026-10-07）から <strong>2027-01-31 まで約16週</strong>。この間に参加条件（1,000人＋4,000時間）を満たせば、以後は現行の低い条件で参加できる</li>
+<li>試算: 60分動画の平均視聴時間を15分と仮定すると、4,000時間 ≒ <strong>1.6万回再生</strong>（参考例は約1時間半の動画で平均約25分。E12）。参考例は100日で34.6万回なので、同じ水準なら届く。ただし参考例は経験者の支援つき（<a class="doclink" href="#d-research-competitors"><code>COMPETITORS.md</code></a> S-01）</li>
+<li>週12時間・1本4〜5週なら、1月末までに出せるのは<strong>3本前後</strong>。1本目を11月中に出せるかが分かれ目</li>
+<li><strong>注意</strong>: 期限に合わせて質を落とすのは本末転倒（資産性が目的）。間に合わなくても、2月以降は8,000時間が必要になるだけで、長尺の総再生時間で稼ぐ戦略はむしろ有利になる</li>
+<li>既存参加者の維持条件: 2027-01-31までに新規約に同意し、「年間1,000時間」「ショート90日100万回」「90日ごとに長尺2本またはショート5本」のいずれかを満たす（国内報道で一致）。こちらの投稿ペース（4〜5週に1本＝90日で2〜3本）なら満たせる</li>
+<li>500人の早期アクセス枠（メンバーシップ・Super Thanks 等。登録者500人＋総再生3,000時間 など）は<strong>変更なし</strong></li>
+<li><strong>不明点</strong>: 1月末までに条件を満たしても、審査中のまま2月1日を迎えた場合に旧条件が適用されるかは未確認。参考例では「承認は基本1か月後」と言われており（参考例は例外的に2日）、<strong>1月上旬までに申請できる状態</strong>を目安にする</li>
+<li>参考動画の「最低3本のアップロード」は、公式の新規参加条件として確認できていない（早期アクセス枠の条件の可能性。要確認）</li>
+</ul>
+<h3 id="d-research-evidence--e3-の詳細2026-10-07-追加確認">E3 の詳細（2026-10-07 追加確認）</h3>
+<ul>
+<li>発表: 2026年8月（国内では8/11前後に ITmedia・Impress Watch・電ファミニコゲーマー・GameBusiness.jp などが報道）</li>
+<li>YouTube 公式ページはこの環境から開けず、<strong>一次情報は未確認</strong>。報道各社の内容は一致している</li>
+<li>長尺で試算: 8,000時間 ≒ 平均視聴15分なら3.2万回、平均25分（参考例のStardew）なら約1.9万回。参考例の Stardew は1本で3.7万時間なので、<strong>長尺で1本当たれば新条件でも届く</strong>。条件の倍増はショート中心や小規模チャンネルほど厳しい</li>
+</ul>
+<h2 id="d-research-evidence--結論尺について">結論（尺について）</h2>
+<ul>
+<li><strong>「長尺にする」は根拠あり</strong>（E1・E4・E5、収益化条件 E3）</li>
+<li><strong>「60分ちょうどが最適」は根拠不足</strong>（E2）。45〜70分の範囲は維持しつつ、30〜45分も選択肢として残す。素材が40分なら40分</li>
+<li>1本目の公開後、自分のチャンネルの「平均視聴時間」と「視聴者維持率」で尺を決め直す</li>
+</ul>
+<h2 id="d-research-evidence--出典">出典</h2>
+<ul>
+<li>再生時間に占める長尺の割合: https://www.themeasure.net/longer-form-videos-dominate-youtube-watch-time-tubular-bloomberg-shorts/ ／ https://www.advanced-television.com/2025/02/06/data-long-form-content-takes-73-of-youtube-us-viewing-time/</li>
+<li>尺ごとの1本あたり再生時間（単一の分析・本文は未確認）: https://www.jasonscottmontoya.com/business/youtube/840-ideal-length-video</li>
+<li>視聴時間と再生数の関係（学術）: https://arxiv.org/abs/1603.08308</li>
+<li>日本のYouTube視聴（長尺が約70%、21時がピーク）: https://avia.org/youtube-commands-more-than-65-of-japans-digital-vod-hours-with-news-and-baseball-leading-what-the-country-watches/</li>
+<li>TV視聴の割合: https://www.emarketer.com/content/youtube-ctv-growth-pricing-edge-boost-2026-streaming-outlook ／ https://www.advanced-television.com/2026/06/03/report-youtube-overtakes-netflix-in-daily-viewing-time</li>
+<li>YPP 2027年の条件変更: https://www.itmedia.co.jp/news/article/2608/11/2000000495/ ／ https://www.watch.impress.co.jp/docs/news/2132136.html ／ https://www.gamebusiness.jp/article/2026/08/12/27672.html ／ https://news.denfaminicogamer.jp/news/2608112g ／ https://tbreak.com/youtube-partner-program-8000-watch-hours/ ／ https://www.business-standard.com/technology/tech-news/technology-tech-news-youtube-partner-program-monetisation-rules-2027-watch-hours-shorts-views-126081100708_1.html ／ https://www.androidheadlines.com/2026/08/youtube-doubles-partner-program-monetization-requirements-2027-update.html ／ https://www.digitaltoday.co.kr/jp/view/91483/youtube-to-raise-bar-for-creator-monetisation</li>
+<li>中間広告8分: https://www.tubefilter.com/2020/07/07/youtube-lowering-minimum-video-length-mid-roll-ads/</li>
+<li>編集時間の目安: https://town.crowdworks.jp/articles/video-editing-takes-too-long</li>
+<li>E6〜E12 の参考例: https://youtu.be/PHRqkara4eU（ユーザー提供の文字起こし）</li>
+</ul>
+</article>
+<article id="d-research-game-candidates" hidden><div class="src">research/GAME_CANDIDATES.md</div>
+<h1 id="d-research-game-candidates--ゲーム候補の判定">ゲーム候補の判定</h1>
+<p>最終更新: 2026-10-07。判定は <strong>やる / テストする / 今はやらない</strong>。データの凡例: ⚠️二次情報（要再確認）／❌未取得。</p>
+<p>分類は指示.md §12 の不動産分類（一等地・安定収益・成長株・投機・イベント会場）。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ゲーム</th>
+<th>分類</th>
+<th>判定</th>
+<th>主な根拠・懸念</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minecraft + Create</td>
+<td>一等地</td>
+<td><strong>保留</strong>（初期3本に工業を入れるかユーザー判断待ち。§7）</td>
+<td>入口が大きく説明しやすい。Create DL数は約2億（⚠️）。懸念: 競合調査が未了、MODバージョン更新</td>
+</tr>
+<tr>
+<td>Factorio</td>
+<td>一等地</td>
+<td><strong>保留</strong>（同上。参考例では工業は伸ばしにくいとされる）</td>
+<td>同時接続が長期安定（⚠️ 月平均 約1.5〜1.8万）。懸念: 説明が難しい。縛り・数字で一般性を作る</td>
+</tr>
+<tr>
+<td>Satisfactory</td>
+<td>一等地候補</td>
+<td><strong>テストする</strong>（003の代案）</td>
+<td>同時接続 約2.2万、24hピーク 約2.7万（⚠️2026-10）。FactorioとCreateの中間で、客層が近いはず（要検証）。過去ピーク数値が情報源で食い違う（104,677 と 185,957）ので要再確認</td>
+</tr>
+<tr>
+<td>Cities: Skylines（初代）</td>
+<td>安定収益</td>
+<td>候補（1本目は II に変更）</td>
+<td>Steam 2026-06 平均 約8,300・ピーク約1.4万、変動が小さい（⚠️）。初代はアップデートで古くなりにくい</td>
+</tr>
+<tr>
+<td>Cities: Skylines II</td>
+<td>安定収益／投機寄り</td>
+<td><strong>やる（v3 の1本目）</strong></td>
+<td>人口小さめ（⚠️ 平均約9,500）、運営交代・追加コンテンツ続き＝アップデート依存。分かりやすさとBefore/Afterは強い。やるなら20時間以内に抑える</td>
+</tr>
+<tr>
+<td>Kerbal Space Program（1）</td>
+<td>安定収益</td>
+<td><strong>テストする</strong>（後ろの順番）</td>
+<td>宇宙開発は題材が長寿命。ただし2026-05の同時接続約1.2万は<strong>アルテミスII特需の可能性が高く</strong>、人口の平常値ではない（⚠️）。KSP2は開発停止（2024年）で、続編の期待は薄い</td>
+</tr>
+<tr>
+<td>Hearts of Iron IV</td>
+<td>安定収益</td>
+<td><strong>今はやらない</strong>（再評価はG4以降）</td>
+<td>人口は大きく長期だが、工業/自動化視聴者とは別。「システム攻略」にどう寄せるか企画が未設計。データも未取得（❌）</td>
+</tr>
+<tr>
+<td>Arknights: Endfield</td>
+<td>成長株／投機</td>
+<td><strong>今はやらない</strong>（Steam版の動向待ち）</td>
+<td>2026-01-22 発売。事前登録3,500万（⚠️）。工業（基地建設・生産ライン）要素は強いが、ガチャ型RPGで長期人口は未確認。Steam版は発表済みで日付は未定（⚠️）。やるなら発売直後に1〜2本の投機枠</td>
+</tr>
+<tr>
+<td>Palworld</td>
+<td>成長株→一等地候補</td>
+<td><strong>初期3本の候補</strong></td>
+<td>2026-07-10 に正式版1.0。Steam 同時接続は約86万〜約100万（2026-07、早期アクセス開始時の210万に次ぐ）、販売3,000万本超（⚠️）。パルを働かせる拠点の自動化は「工業の専門用語なしの自動化」。懸念: 1.0 直後のブームで、今後どこまで人口が残るか</td>
+</tr>
+<tr>
+<td>Core Keeper</td>
+<td>投機寄り</td>
+<td><strong>テストする</strong>（初期3本には入れない）</td>
+<td>参考例が7月に投稿し「調子もよい」と申告。ただし Steam 月平均は 2026-02〜03 の約1.4万（アップデート時）から7月は約3,700 に減少（⚠️）。<strong>アップデート依存で人口は小さい</strong></td>
+</tr>
+<tr>
+<td>Find the Needle</td>
+<td>投機</td>
+<td><strong>今はやらない</strong>（情報不足）</td>
+<td>検索結果では「500万個の干し草から針を探す」型の話題作という情報のみで、工業・自動化との相性の裏付けが取れていない（⚠️）。「相性が非常に高い」という前提はこの時点では未検証。話題性だけならイベント会場枠</td>
+</tr>
+<tr>
+<td>R.E.P.O. / PEAK</td>
+<td>イベント会場</td>
+<td><strong>今はやらない</strong></td>
+<td>ブランドとの接続が弱い（指示.md §13）。友達との掛け合いなど別の武器がある場合のみ</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-game-candidates--参考例ゆるめのまりさで伸びたゲーム2026-10-07追記">参考例（ゆるめのまりさ）で伸びたゲーム（2026-10-07追記）</h2>
+<p>数値は投稿者の自己申告（<a class="doclink" href="#d-research-competitors"><code>COMPETITORS.md</code></a> S-01）。<strong>同じゲームは、この動画を見た後発と競合する</strong>点に注意。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ゲーム</th>
+<th>分類（暫定）</th>
+<th>判定</th>
+<th>根拠・懸念</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stardew Valley</td>
+<td>一等地</td>
+<td><strong>初期3本の候補</strong>（要競合調査）</td>
+<td>Steam 月平均 約5.9万〜7.6万（2026-01〜06、⚠️）。候補の中で最大かつ安定。参考例で100日8.9万回・3.7万時間。後発が増える懸念 → 切り口（最適化・数字）で差別化</td>
+</tr>
+<tr>
+<td>Terraria</td>
+<td>一等地</td>
+<td>候補（要競合調査）</td>
+<td>Steam 月平均 約2.6万〜9.9万（2026-04〜06、5月に急増、⚠️）。参考例で初動が強い</td>
+</tr>
+<tr>
+<td>Cookie Clicker</td>
+<td>一等地</td>
+<td>候補（要競合調査）</td>
+<td>6本中で最多（100日目に9万回）。<strong>「数字が爆発的に増える」は巨大化・数字フォーマットそのもの</strong>。後発の懸念が最も大きい</td>
+</tr>
+<tr>
+<td>インクリメンタル全般</td>
+<td>安定収益</td>
+<td>候補</td>
+<td>同系統の名作（Cookie Clicker）と組み合わせると伸びる。単体では尺が短くなりやすい（参考例の失敗点）</td>
+</tr>
+<tr>
+<td>Astroneer</td>
+<td>投機</td>
+<td>今はやらない</td>
+<td>参考例で相対的に失敗（コミュニティが小さい・中身が工業）</td>
+</tr>
+</tbody>
+</table></div>
+<p>工業系（Create・Factorio・Satisfactory）の扱い: 参考例の投稿者は「工業は伸ばすのが難しい」と明言（<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §7.1）。<strong>初期3本での扱いはユーザー判断待ち。</strong></p>
+<h2 id="d-research-game-candidates--未調査phase-2-で追加する">未調査（Phase 2 で追加する）</h2>
+<p>最低20〜30タイトルが目標。現在12タイトル。未調査の主な系統:<br>
+Dyson Sphere Program、Mindustry、Shapez 2、Oxygen Not Included、RimWorld、Timberborn、Anno、Factory 系の新作、Space Engineers、Stationeers、Per aspera、Frostpunk、Banished 系、Transport Fever、Workers &amp; Resources、Project Zomboid、Satisfactory 周辺のMOD。</p>
+<p>調べる項目は指示.md §19。今回のコンテナでは Steam API と YouTube/Trends に接続できないため、<strong>データ取得手段</strong>（Steam API のアクセス、YouTube Data API キー、SteamDB 等）をユーザー側で用意するか、手動エクスポートを渡してもらうのが最短。</p>
+</article>
+<article id="d-research-game-market" hidden><div class="src">research/GAME_MARKET.md</div>
+<h1 id="d-research-game-market--ゲーム市場データ">ゲーム市場データ</h1>
+<p>取得日: 2026-10-07</p>
+<h2 id="d-research-game-market--データ取得の状況">データ取得の状況</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>状態</th>
+<th>備考</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steam API（同時接続）</td>
+<td>❌</td>
+<td>コンテナから接続できず空応答。直接取得は失敗</td>
+</tr>
+<tr>
+<td>SteamDB / Steam Charts</td>
+<td>⚠️</td>
+<td>直接アクセスせず、Web検索結果の要約から二次取得</td>
+</tr>
+<tr>
+<td>YouTube（検索量・動画数・再生数）</td>
+<td>❌</td>
+<td>未接続</td>
+</tr>
+<tr>
+<td>Google Trends</td>
+<td>❌</td>
+<td>未接続</td>
+</tr>
+<tr>
+<td>Reddit / Discord 人口</td>
+<td>❌</td>
+<td>未取得</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>このファイルの数値はすべて二次情報。意思決定に使う前に、出典の一次情報で再確認する。</strong></p>
+<h2 id="d-research-game-market--steam-同時接続web検索の要約から要再確認">Steam 同時接続（Web検索の要約から。要再確認）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ゲーム</th>
+<th>時点</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Factorio</td>
+<td>2026-01〜06 月次</td>
+<td>平均 15.5〜18.0千／ピーク 25.5〜31.3千（月ごとの詳細は <a class="doclink" href="#d-videos-archive-v1-002-factorio-research"><code>videos/_archive-v1/002-factorio/research.md</code></a>）</td>
+</tr>
+<tr>
+<td>Cities: Skylines II</td>
+<td>2026-06</td>
+<td>平均 9,524／ピーク 16,426。過去最高 24,440（2025-11）</td>
+</tr>
+<tr>
+<td>Satisfactory</td>
+<td>2026-10</td>
+<td>現在 22,342／24hピーク 27,033。過去ピークは 104,677 と 185,957 の2説あり</td>
+</tr>
+<tr>
+<td>Kerbal Space Program（1）</td>
+<td>2026-05-05</td>
+<td>ピーク 約12,000（アルテミスII 話題による特需と報じられている。10年超ぶりの高水準）</td>
+</tr>
+<tr>
+<td>Arknights: Endfield</td>
+<td>2026-01-22 発売</td>
+<td>事前登録3,500万以上。Steam同接は未取得</td>
+</tr>
+<tr>
+<td>Hearts of Iron IV</td>
+<td>—</td>
+<td>未取得</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-game-market--modコミュニティ">MODコミュニティ</h2>
+<ul>
+<li>Create（Minecraft MOD）: CurseForge 約1.868億、Modrinth 約1,730万 ダウンロード（2026-04-21時点）</li>
+</ul>
+<h2 id="d-research-game-market--主な出典">主な出典</h2>
+<ul>
+<li>Factorio: SteamDB / steambase / live-player-count などの集計ページ（検索結果から）</li>
+<li>CS2: steambase / steampulse / pcgameshardware.de / Wikipedia</li>
+<li>Satisfactory: raijin.gg / gameworldobserver.com</li>
+<li>KSP: games.gg / mlwgames.com / Wikipedia（KSP2）</li>
+<li>Create: Modrinth / GDLauncher の統計ページ</li>
+<li>Endfield: gematsu / rpgsite / automaton-media</li>
+</ul>
+</article>
+<article id="d-research-rights" hidden><div class="src">research/RIGHTS.md</div>
+<h1 id="d-research-rights--権利ライセンスの確認">権利・ライセンスの確認</h1>
+<p>調査日: 2026-10-07。<strong>公式ページはこの環境から開けず、Web検索の要約から確認した段階。収益化の前に、必ず公式ページで本人が確認する。</strong></p>
+<p>ユーザーの認識: 「権利は無収益ならOK」。→ <strong>計画は2027年1月に収益化を申請する前提なので、収益化に向けた準備が必要。</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>対象</th>
+<th>収益化した動画での扱い（調査結果）</th>
+<th>対応</th>
+<th>確認先</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>YMM4（ゆっくりMovieMaker4）＋AquesTalk（ゆっくりボイス）</strong></td>
+<td>収益化動画に使うには <strong>AquesTalk の商用ライセンスの購入が必要</strong>。YMM4 では、AquesTalk の声を使わなくてもライセンスが必要とされる。AquesTalk を含まない「YMM4 Lite」は無料（ただし AquesTalk プラグインを入れればライセンスが必要）。価格は検索結果では年6,380円 または 19,140円（要確認）</td>
+<td><strong>収益化を申請する前にライセンスを購入</strong>。収益化前に投稿した動画も収益化の対象になるため、1本目の投稿前に購入しておくのが安全（要確認）</td>
+<td>https://www.manjubox.net/ymm4/faq/etc/without-aquestalk</td>
+</tr>
+<tr>
+<td>東方Project のキャラ（霊夢・魔理沙など）</td>
+<td>東方Project 二次創作ガイドラインに従う。ゆっくり実況で収益化しているチャンネルは多く、ガイドラインを明記している例が多い。<strong>収益化の可否と条件の詳細は未確認</strong></td>
+<td>ガイドラインを読み、概要欄に記載が必要なら従う</td>
+<td>https://touhou-project.news/guideline/</td>
+</tr>
+<tr>
+<td>立ち絵素材</td>
+<td>素材ごとの利用規約による（商用・収益化の可否、クレジット表記）</td>
+<td>使う素材を決めたら規約を確認</td>
+<td>各素材の配布ページ</td>
+</tr>
+<tr>
+<td>RimWorld（Ludeon Studios）</td>
+<td>実況動画の作成と収益化を自由に認めている（検索結果）</td>
+<td>問題なし（要確認）</td>
+<td>https://ludeon.com/blog/faq/</td>
+</tr>
+<tr>
+<td>Cities: Skylines（Paradox Interactive）</td>
+<td><strong>明確な方針を確認できず</strong>。一般にゲーム実況の収益化は認められていることが多いが未確認</td>
+<td>公式の動画ポリシーを確認</td>
+<td>Paradox 公式サイト</td>
+</tr>
+<tr>
+<td>BGM・効果音</td>
+<td>素材ごとの規約（商用可・クレジット表記）</td>
+<td>商用可の素材だけを使う</td>
+<td>各素材の配布ページ</td>
+</tr>
+</tbody>
+</table></div>
+</article>
+<article id="d-research-trend-watch" hidden><div class="src">research/TREND_WATCH.md</div>
+<h1 id="d-research-trend-watch--トレンドウォッチ">トレンド・ウォッチ</h1>
+<p>最終更新: 2026-10-07</p>
+<h2 id="d-research-trend-watch--現在気になる動き二次情報要再確認">現在気になる動き（二次情報。要再確認）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>動き</th>
+<th>影響</th>
+<th>見方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>KSP が2026-05に10年超ぶりの同時接続（アルテミスII 話題）</td>
+<td>外部ニュースによる<strong>特需</strong>。人口の平常値ではない</td>
+<td>数か月後に平常値へ戻るか確認。戻るなら宇宙系の長期需要は小さい</td>
+</tr>
+<tr>
+<td>Endfield が Steam 版を発表（日付未定）</td>
+<td>Steam 参入で人口が増える可能性</td>
+<td>発売後の同接推移を見て投機枠を判断</td>
+</tr>
+<tr>
+<td>CS2 が運営交代・追加コンテンツ連発（2026-09 Expansion Pass 2、Q4 Park Adventures）</td>
+<td>アップデートで動画が古くなる／逆に話題になる</td>
+<td>003 の撮影タイミングはパッチ状況を見て決める</td>
+</tr>
+<tr>
+<td>Steam 全体の同時接続が過去最高を更新（2026-01-11 に 4,200万超）</td>
+<td>市場全体は拡大</td>
+<td>個別ゲームの人口と混同しない</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-trend-watch--定期チェック月1回">定期チェック（月1回）</h2>
+<ul>
+<li>候補ゲームの Steam 同接（月平均・ピーク）</li>
+<li>新作の発売予定（投機枠の候補）</li>
+<li>候補ゲームの大型アップデート予定</li>
+<li>001〜003 の再生推移（公開後）</li>
+</ul>
+</article>
+<article id="d-research-yukkuri-tone" hidden><div class="src">research/YUKKURI_TONE.md</div>
+<h1 id="d-research-yukkuri-tone--ゆっくり実況のノリの分析">ゆっくり実況の「ノリ」の分析</h1>
+<p>作成: 2026-10-07。</p>
+<h2 id="d-research-yukkuri-tone--データの状況正直に">データの状況（正直に）</h2>
+<ul>
+<li>YouTube に接続できないため、動画の中身を自分で大量に見ることはできない</li>
+<li>手元にある実データは <strong>参考動画（ふつうのくま企画・約60分）の文字起こし全文1本</strong>（<a class="doclink" href="#d-research-competitors"><code>COMPETITORS.md</code></a> S-01）。今いちばん伸びている型の1つの、実際の会話</li>
+<li>Web 検索で分かった一般的な特徴: テンポの良さと気軽さ／キャラの濃さ（4〜6人で回すチャンネルもある）／「ゆっくり実況」そのものをネタにするメタ発言（例: 100菌）／ボケもツッコミも両方こなす掛け合い</li>
+<li><strong>2本目（2026-10-07 追加）</strong>: ユーザーが貼った、Among Us（闇鍋）のゆっくり実況の文字起こし全文（約2時間47分）。チャンネル開設約4年・同シリーズ約250本の、続いているチャンネル。プレイヤー役（「私」・丁寧語）＋霊夢＋魔理沙の3人で実況し、コラボ相手の生声も入る形式</li>
+<li>これで n=2。両方に共通する特徴を「ゆっくり実況のノリ」の芯として扱う</li>
+</ul>
+<h2 id="d-research-yukkuri-tone--文字起こしから抜き出したノリの特徴">文字起こしから抜き出した「ノリ」の特徴</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>特徴</th>
+<th>文字起こしの例（要約・短い引用）</th>
+<th>最初の台本サンプルにあったか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>セリフが短い</strong></td>
+<td>1セリフは長くて1〜2文。ツッコミは一言（「何の説明だったんだよ」「泣くぞ」）</td>
+<td>×（説明的で長い）</td>
+</tr>
+<tr>
+<td><strong>情報→すぐ茶化す</strong></td>
+<td>真面目な説明の直後に、必ずボケかツッコミで崩す。1〜2セリフに1回は笑いどころ</td>
+<td>△（説明が続く）</td>
+</tr>
+<tr>
+<td><strong>視聴者・動画そのものをいじる（メタ）</strong></td>
+<td>冒頭から視聴者に話しかける。「横動画を見ているあなたは〜」→「見てる方が〜だろ」。編集・尺・YouTube の話をネタにする</td>
+<td>×（なし）</td>
+</tr>
+<tr>
+<td><strong>ボケとツッコミが入れ替わる</strong></td>
+<td>説明役も平気でボケる。ツッコミ役も悪ノリする。役割は固定しすぎない</td>
+<td>×（魔理沙が常に正論）</td>
+</tr>
+<tr>
+<td><strong>天丼（同じネタの繰り返し）</strong></td>
+<td>「反面教師」「大学生基準」「フランちゃん」が何度も出てくる</td>
+<td>×（なし）</td>
+</tr>
+<tr>
+<td><strong>唐突なたとえ・固有名詞</strong></td>
+<td>ドラえもん、大谷翔平、サメ、メントスコーラ</td>
+<td>×（なし）</td>
+</tr>
+<tr>
+<td><strong>少し毒のある言い方</strong></td>
+<td>「普通に引いたわ」「どこ目指してんだお前」など、仲が良い前提の口の悪さ</td>
+<td>×（行儀が良すぎた）</td>
+</tr>
+<tr>
+<td><strong>テロップ・効果音で笑わせる</strong></td>
+<td>会話だけでなく、画面の文字や音で落とす</td>
+<td>×（テロップは状況説明だけ）</td>
+</tr>
+<tr>
+<td><strong>自虐</strong></td>
+<td>自分の失敗やダメさを自分で言う</td>
+<td>△</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-yukkuri-tone--最初のサンプルがノリが違う原因診断">最初のサンプルが「ノリが違う」原因（診断）</h2>
+<ol>
+<li><strong>説明書みたいな会話</strong>だった（文が長い・論理的・丁寧）</li>
+<li><strong>魔理沙が正論ばかり</strong>で、一方通行のツッコミになっていた</li>
+<li><strong>メタ・視聴者いじり・天丼・テロップのボケ</strong>がゼロだった</li>
+<li>笑いどころの間隔が長かった</li>
+</ol>
+<h2 id="d-research-yukkuri-tone--台本のルール暫定">台本のルール（暫定）</h2>
+<ul>
+<li>1セリフは1文まで。説明が長くなったら分けて、間にツッコミを挟む</li>
+<li>説明を2セリフ続けたら、次は必ず崩す</li>
+<li>霊夢は「勢い」、魔理沙は「計画」だが、<strong>魔理沙もボケる</strong>。2人とも少しずつダメ</li>
+<li>冒頭は視聴者への話しかけ（メタ）から入る</li>
+<li>チャンネル共通の天丼を2〜3個作る（例: 霊夢の雑な四捨五入、「市長です」テロップ、道路への執着）</li>
+<li>テロップで落とす場面を各パートに1つ入れる</li>
+<li>口の悪さは「仲が良い前提」の範囲まで。本気の悪口・他人や特定の実在の人への攻撃はしない</li>
+</ul>
+<h2 id="d-research-yukkuri-tone--2本目among-us-闇鍋約2時間47分から分かったこと">2本目（Among Us 闇鍋・約2時間47分）から分かったこと</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>特徴</th>
+<th>例（要約・短い引用）</th>
+<th>1本目と共通か</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>一言の決め文句（タグ）が2〜3セリフごとに入る</strong></td>
+<td>「〜定期」「〜ゲーミング」（人任せゲーミング）「〜チャンネル」（手のひら回転チャンネル、実質お料理チャンネル）「圧倒的〜」「〜あるある」「草」</td>
+<td>○（1本目より頻度がずっと高い）</td>
+</tr>
+<tr>
+<td><strong>語り手（プレイヤー役）が丁寧語で淡々と悪いことを言う</strong></td>
+<td>丁寧語で「無料1キル」「圧倒的愚策」など。悪役ぶりと丁寧さの落差</td>
+<td>△</td>
+</tr>
+<tr>
+<td><strong>毎回の冒頭に意味のない茶番</strong></td>
+<td>「道端で困っていたおばあちゃん30人を助けた」「全国の山田を従わせる魔法」など、本編と関係ない一発ネタ → すぐ本題へ</td>
+<td>×（1本目にはない）</td>
+</tr>
+<tr>
+<td><strong>毎回出てくる看板コーナー</strong></td>
+<td>役職ごとの「ティア評価」を毎回言う</td>
+<td>○（こちらの「決算」に当たる）</td>
+</tr>
+<tr>
+<td><strong>天丼（シリーズをまたいだ繰り返しネタ）</strong></td>
+<td>「幻の4試合目」（尺調整ネタ）、途中で唐突に「高評価よろしく」→「本日のノルマ達成」、架空の研究「〜大学定期」</td>
+<td>○</td>
+</tr>
+<tr>
+<td><strong>メタ（編集・尺・チャンネル）</strong></td>
+<td>「眠さと格闘しながら編集」「尺調整ミスで生まれた4試合目」「動画ストックという夢」</td>
+<td>○</td>
+</tr>
+<tr>
+<td><strong>パロディ・他作品のセリフのもじり</strong></td>
+<td>有名漫画・アニメの名台詞をもじる</td>
+<td>△（1本目は固有名詞のたとえ）</td>
+</tr>
+<tr>
+<td><strong>自虐</strong></td>
+<td>「人生で長続きしたのは動画投稿だけ」</td>
+<td>○</td>
+</tr>
+<tr>
+<td><strong>仲が良い前提の口の悪さ</strong></td>
+<td>「お猿さん」「〜やめろ」「誰が凡人だよ」</td>
+<td>○</td>
+</tr>
+<tr>
+<td><strong>ゲームの説明は短く、すぐ茶化す</strong></td>
+<td>役職の能力を1〜2文で説明 → 即ボケ</td>
+<td>○</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-yukkuri-tone--2本を通したノリの芯">2本を通した「ノリの芯」</h2>
+<ol>
+<li><strong>1セリフは短い。説明は1〜2文で切って、すぐ茶化す</strong></li>
+<li><strong>笑いの間隔は2〜3セリフに1回</strong>（決め文句・ツッコミ・テロップのどれか）</li>
+<li><strong>メタ・自虐・天丼・パロディ</strong>を混ぜる</li>
+<li><strong>看板コーナーを毎回やる</strong>（こちらは「決算」）</li>
+<li>口は悪いが、仲が良い前提</li>
+</ol>
+<h2 id="d-research-yukkuri-tone--このチャンネルへの当てはめ">このチャンネルへの当てはめ</h2>
+<ul>
+<li><strong>冒頭に10〜20秒の茶番</strong>を毎回入れる（本編と関係ない一発ネタ → 「というわけで今回は〜」で本題）</li>
+<li><strong>テロップを「3人目のツッコミ役」にする</strong>: 2本目の決め文句の多くは、3人目の声として入っていた。こちらは声を増やさず、<strong>テロップで一言の決め文句を入れる</strong>（音声の作業が増えないので編集が軽い）</li>
+<li>霊夢・魔理沙の2人は維持（「勢い」と「計画」）。ただし魔理沙も悪ノリする</li>
+<li>天丼を最初から用意しておく: 霊夢の雑な四捨五入／「※市長です」テロップ／途中で唐突に入る「高評価よろしく」系のネタは、2本目と被るので<strong>別の形に変える</strong>（例: 決算の最後に毎回「霊夢の言い訳」）</li>
+<li>2本目に固有の言い回し（チャンネル名入りの看板・特定の決め台詞）は使わない。「定期」「ゲーミング」「圧倒的」「草」などのネットスラングの型は一般的なので使ってよい</li>
+</ul>
+<h2 id="d-research-yukkuri-tone--注意正直な評価">注意（正直な評価）</h2>
+<ul>
+<li><strong>このノリは笑いの密度が高いぶん、台本を書く時間が増える</strong>。編集1分=1時間の見積もりは、このノリが前提だと甘い可能性がある → 1本目で必ず実測</li>
+<li><strong>街づくりは Among Us より出来事が少ない</strong>。Among Us はゲーム自体が騒動を起こすが、街づくりは静か → 笑いを台本で作る比率が高くなる。初見の失敗・早送り＋テロップのボケで補う</li>
+</ul>
+<h2 id="d-research-yukkuri-tone--3本目minecraft飛行船mod約2時間50分から分かったこと">3本目（Minecraft・飛行船MOD・約2時間50分）から分かったこと</h2>
+<p>ユーザーが貼った文字起こし全文（2026-10-07）。チャンネル登録者30万人。9人でのマルチプレイ。MODで空飛ぶ船（拠点ごと移動する）を作って旅をする企画。実況は「プレイヤー役（主人公・丁寧語）＋ツッコミ役」の2人。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>特徴</th>
+<th>例（要約・短い引用）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>主人公がボケで悪役</strong></td>
+<td>主人公が平然とひどいことを言う／する（村を「物資補給所」と呼んで根こそぎ持っていく、村人を「山猿」と呼ぶ）。ツッコミ役が良心として止める（止まらない）</td>
+</tr>
+<tr>
+<td><strong>主人公が自分でゲームの仕組みを1〜2文で説明する</strong></td>
+<td>「バルーンブロックと舵を作れば飛べる」→ すぐボケ。ツッコミ役は解説しない</td>
+</tr>
+<tr>
+<td><strong>毎回同じ形のツッコミ（決め文句）</strong></td>
+<td>「〜に涙が止まらない」が何十回も出る。「〜やめろ」「人の心ないんか」</td>
+</tr>
+<tr>
+<td><strong>ゲーム内の物に名前をつけて、キャラにする</strong></td>
+<td>小型船を「ボロカス号」と呼び、最後まで何度も出てきて扱いがひどくなっていく（天丼）</td>
+</tr>
+<tr>
+<td><strong>自業自得の大事故が最大の見せ場</strong></td>
+<td>村を空爆しようとして自分の船を爆破 → 落ち込む → 立て直す。この流れが一番盛り上がる</td>
+</tr>
+<tr>
+<td><strong>長い話の伏線回収</strong></td>
+<td>冒頭で置いてきた最初の船を、最後に取りに戻って締める</td>
+</tr>
+<tr>
+<td><strong>メタ・自虐</strong></td>
+<td>編集で病んで温泉旅行、「20分作って1時間休憩」、登録者30万人記念を船に飾る</td>
+</tr>
+<tr>
+<td><strong>唐突な脱線</strong></td>
+<td>「40年後に群馬県が独立する」など、意味のない一発ネタ</td>
+</tr>
+<tr>
+<td><strong>視聴者参加</strong></td>
+<td>メンバーの部屋の人気投票（約4,300票）</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-research-yukkuri-tone--3本を通したノリの芯v2">3本を通した「ノリの芯」（v2）</h2>
+<ol>
+<li><strong>セリフは短い。笑いどころは1〜2セリフに1回</strong>（3本とも）</li>
+<li><strong>主人公がボケ（ときに悪役）、相方がツッコミ（良心）</strong>。ゲームの説明は主人公が1〜2文で済ませる（3本とも）</li>
+<li><strong>決め文句（ツッコミの型）を持つ</strong>：「〜定期」（2本目）、「〜に涙が止まらない」（3本目）。チャンネルの口癖になる</li>
+<li><strong>ゲーム内の物をキャラにして天丼にする</strong>（3本目のボロカス号）</li>
+<li><strong>自業自得の大事故 → 立て直し</strong>が山場（1本目は戦略の失敗、3本目は空爆の自爆）</li>
+<li><strong>冒頭と最後をつなぐ伏線回収</strong>（1本目・3本目）</li>
+<li>メタ・自虐・唐突な脱線</li>
+</ol>
+<h2 id="d-research-yukkuri-tone--当てはめv2このチャンネル用のルール">当てはめ（v2。このチャンネル用のルール）</h2>
+<ul>
+<li><strong>霊夢＝主人公・ボケ・悪役寄り</strong>。勢いで街を広げ、市民をコスト扱いする。ゲームの仕組みは霊夢が1〜2文で説明する</li>
+<li><strong>魔理沙＝ツッコミ・良心</strong>。解説はほぼしない。霊夢の無茶を止める（止まらない）</li>
+<li><strong>このチャンネルの決め文句（候補）</strong>：霊夢「必要経費です」（どんな犠牲もこれで片付ける）／魔理沙「決算に響くぞ」（看板の「決算」につながる）</li>
+<li><strong>毎回、道やエリアに名前をつけてキャラにする</strong>（例: 霊夢が自分の名前をつけた「霊夢通り」が毎回渋滞の元凶になる）</li>
+<li><strong>1本に1回は自業自得の大事故</strong>を見せ場にする（初見なので自然に起きるはず。起きた出来事をそう構成する）</li>
+<li>冒頭で出したネタを、決算で回収する</li>
+<li>他チャンネル固有の決め文句（「〜に涙が止まらない」「人外の力集結」など）は使わない</li>
+</ul>
+<h2 id="d-research-yukkuri-tone--戦略面の示唆ノリ以外">戦略面の示唆（ノリ以外）</h2>
+<ul>
+<li><strong>工業寄りの Minecraft MOD でも、登録者30万人規模で成立している例</strong>。ただし、売っているのは工業の説明ではなく「空飛ぶ拠点で旅をするロマン」「事故」「仲間とのドタバタ」。仕組みの説明は1〜2文だけ。1本目（参考動画）の「工業は伸ばしにくい」と矛盾はせず、<strong>「工業を見せる」のではなく「ロマンと事故を見せる」なら成立しうる</strong>という補足になる（n=1・大きなチャンネル・9人のマルチで、こちらは1人。そのまま当てはまらない）</li>
+<li>9人のマルチは出来事（事故・喧嘩・遅刻ネタ）を勝手に生む。<strong>1人プレイのこちらは出来事が少ない</strong> → 主人公の「勢い」で事故を起こす設計がより大事になる</li>
+</ul>
+<h2 id="d-research-yukkuri-tone--4本目among-us-闇鍋別の投稿者視点約4時間から分かったこと">4本目（Among Us 闇鍋・別の投稿者視点・約4時間）から分かったこと</h2>
+<p>ユーザーが貼った文字起こし全文（2026-10-08）。2本目と同じ仲間内のコラボを、別の投稿者の視点で撮ったもの。主人公（投稿者のキャラ）＋ツッコミ役の2人で実況し、コラボ相手の生声が入る。<strong>2本目と同じ系統なので、新しい情報は「主人公の心の声」の使い方が中心。</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>特徴</th>
+<th>例（要約）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>主人公が考えていることをそのまま口に出す</strong></td>
+<td>「ここでキルしたら疑われる。だから次のターン」のように、判断の理由を全部しゃべる → 視聴者が判断についていける</td>
+</tr>
+<tr>
+<td><strong>自信満々の宣言 → すぐ失敗</strong>（フラグと回収）</td>
+<td>「私に任せてくれ」「あまりにも順調」→ 直後にミス。ツッコミ役が一言で刺す</td>
+</tr>
+<tr>
+<td><strong>ツッコミは「草」の一言が多い</strong></td>
+<td>長いツッコミより、短い反応で流す</td>
+</tr>
+<tr>
+<td><strong>冒頭に投稿者の近況ネタ</strong></td>
+<td>本編と関係ない近況を一言 → すぐ本題</td>
+</tr>
+<tr>
+<td><strong>役職の説明は1〜2文で、視聴者向けにナレーションで挟む</strong></td>
+<td>「〜という役職です」</td>
+</tr>
+<tr>
+<td><strong>毎回同じ締めの定型文</strong></td>
+<td>決まった一文で終わる</td>
+</tr>
+<tr>
+<td><strong>仲間の生声が出来事を生む</strong></td>
+<td>嘘・裏切り・バグがゲーム側で勝手に起きる</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="d-research-yukkuri-tone--4本で見えた共通点まとめ">4本で見えた共通点（まとめ）</h3>
+<ul>
+<li>3本目までの「ノリの芯」（<code>§3本を通した「ノリの芯」（v2）</code>）は4本目でも同じ</li>
+<li>追加: <strong>主人公の心の声（判断の理由を口に出す）</strong> と <strong>フラグ→回収</strong> は、出来事が少ない街づくりで特に使える</li>
+<li>4本中3本が「複数人のマルチ」。<strong>1人プレイのこちらは出来事が少ない</strong>という弱点は、4本目でも確認された</li>
+</ul>
+<h3 id="d-research-yukkuri-tone--当てはめ追加">当てはめ（追加）</h3>
+<ul>
+<li>霊夢が自分の判断を口に出す（「ここに道を引けば完璧ね」）→ テロップで回収（【※完璧ではありませんでした】）</li>
+<li>締めは独自の定型文を作る（参考チャンネルの締めは使わない。<a class="doclink" href="#d-docs-originality"><code>docs/ORIGINALITY.md</code></a>）</li>
+<li>パクリ防止のルールと使用禁止リストは <a class="doclink" href="#d-docs-originality"><code>docs/ORIGINALITY.md</code></a></li>
+</ul>
+</article>
+<article id="d-videos-001-cities2-idea" hidden><div class="src">videos/001-cities2/idea.md</div>
+<h1 id="d-videos-001-cities2-idea--001-cities-skylines-ii--計画-v3-の1本目">001 Cities: Skylines II — 計画 v3 の1本目</h1>
+<p>ステータス: <strong>企画書 叩き台</strong>（G0 未通過）。2026-10-07 ユーザー希望で初代 → <strong>II</strong> に変更（理由と注意は下の「II にした場合の注意」）<br>
+シリーズの型: <strong>「初見・ゼロから12時間で、どこまで発展できるか」＋最後に「決算」</strong>（<a class="doclink" href="#d-docs-video-format"><code>docs/VIDEO_FORMAT.md</code></a>）<br>
+前提: 完成1時間前後・プレイ12時間・編集約60時間（1分=1時間）・制作期間4週（週20時間）・スタイルは「初見の主役＋ツッコミ兼解説役」</p>
+<h2 id="d-videos-001-cities2-idea--一文企画">一文企画</h2>
+<p><strong>街づくり初見のプレイヤーが、何もない土地から12時間で、人口何人の都市を作れるか。</strong></p>
+<h2 id="d-videos-001-cities2-idea--なぜこのゲームこの形か">なぜこのゲーム・この形か</h2>
+<ul>
+<li>「何もない土地 → 大都市」の Before/After が、候補の中で最も分かりやすい（ゲームを知らなくても伝わる）</li>
+<li>指示書の原点（発展・巨大化・街づくり・資源管理）にそのまま一致する</li>
+<li>参考動画が触れていないジャンル（パクリ点検 §9）</li>
+<li>Steam の人口は月平均 約9,500〜9,700・現在約1.2万（⚠️二次情報。初代の約8,300〜1万とほぼ同じか少し多い）</li>
+<li>見た目が新しく、サムネ・俯瞰の絵が強い。追加コンテンツが続いていて話題が途切れにくい</li>
+<li><strong>12時間で区切る</strong>ので、初見でもプレイ時間がぶれない（制作の時間予算と一致）</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--視聴者がクリックする理由">視聴者がクリックする理由</h2>
+<ul>
+<li>「初見」「12時間」という制限と、「人口何人まで行けるか」という結果への興味</li>
+<li>何もない土地と大都市の比較（サムネで一目で伝わる）</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--ゴール終了条件">ゴール・終了条件</h2>
+<ul>
+<li><strong>終了: プレイ時間12時間ちょうど</strong>（ゲーム内の時間ではなく実時間で区切る。ポーズ・メニューの時間の扱いは撮影前に決める）</li>
+<li>目標人口は本番の最初の1時間の伸び方を見て決める（初見なので現実的な数字が分からない。試しプレイは初見の反応を失うのでしない）</li>
+<li>環境: <strong>ベースゲームのみ・MODなし・DLCなし</strong>（初見・公平性・再現性のため。追加コンテンツを使う場合は動画内で明記）</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--決算最後の看板コーナー">決算（最後の看板コーナー）</h2>
+<p>毎回同じ画面レイアウトで、ゲーム内の統計を数字で発表する。</p>
+<ul>
+<li>人口／市の面積（タイル数）／資金・収支／交通の状況（渋滞の度合い）／住民の幸福度／建物の数</li>
+<li>「スタート時 → 12時間後」の比較と、上手くいったこと・失敗したことの総括</li>
+<li><strong>2本目以降も同じ決算画面を使う</strong>（チャンネルの型として覚えてもらう）</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--構成案約60分下の時間は4050分版の目安で60分なら各パートを1215倍に">構成案（約60分。下の時間は40〜50分版の目安で、60分なら各パートを1.2〜1.5倍に）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>時間</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0:00</td>
+<td>12時間後の都市の俯瞰と最終人口（最終形を先に）</td>
+</tr>
+<tr>
+<td>0:30</td>
+<td>0時間目: 何もない土地・初見・ルールの説明（12時間・MODなし）</td>
+</tr>
+<tr>
+<td>〜8分</td>
+<td>最初の道路と住宅、最初の住民（小さな成功）</td>
+</tr>
+<tr>
+<td>〜18分</td>
+<td>人口が増え始める／お金・電気・水の仕組みが分かってくる</td>
+</tr>
+<tr>
+<td>〜25分</td>
+<td><strong>問題発生</strong>（初見の定番: 渋滞・ゴミ・財政難・停電・断水など。実際に起きたものを使う）</td>
+</tr>
+<tr>
+<td>〜38分</td>
+<td>立て直しと一気の拡大</td>
+</tr>
+<tr>
+<td>〜45分</td>
+<td>12時間到達 → <strong>決算</strong></td>
+</tr>
+<tr>
+<td>ラスト</td>
+<td>0時間目と12時間目の比較 → 次の動画の予告</td>
+</tr>
+</tbody>
+</table></div>
+<p>初見の失敗（渋滞・財政破綻など）は<strong>一番の見せ場</strong>。カットせず「問題→立て直し」に使う。</p>
+<h2 id="d-videos-001-cities2-idea--ii-にした場合の注意2026-10-07">II にした場合の注意（2026-10-07）</h2>
+<ul>
+<li><strong>アップデートで動画が古くなる</strong>: 運営が Iceflake Studios に交代（2025年末）し、Expansion Pass 2（2026-09-15）が出たばかり。続く「Park Adventures」は2026年中の予定（日付未定）で、<strong>公園の仕組みと観光の経済を大きく変える</strong>
+<ul>
+<li>対策: 撮影前（G0）に最新パッチの内容を確認。観光・公園に頼る見せ場は避け、道路・人口・お金・電気水道など<strong>基本の発展</strong>で見せる。タイトル・サムネにバージョンを入れない</li>
+<li>撮影中に大型アップデートが来たら、アップデートを入れずに最後まで撮る（Steam のベータ設定で古いバージョンに固定できるかは要確認）</li>
+</ul>
+</li>
+<li><strong>重いゲーム</strong>: Ryzen 7 9700X / RTX 5060 Ti 16GB なら動くが、街が大きくなると CPU とメモリを多く使う。メモリは32GB（確認済み）。録画設定は別の空マップで5分だけ確認し、本番の最初の1時間で録画が正常か確認する（カクつきは街が大きくなる後半に出るので、本番中に記録して決算のネタにもする）</li>
+<li>前作より評価が割れた時期がある（発売時の動作の重さなど）。現在の評価は撮影前に確認</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--最大のリスクと対策">最大のリスクと対策</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>リスク</th>
+<th>対策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>市場が Stardew などより小さい</td>
+<td>1本目で反応を測る（G1/G2）。伸びなければ 案Z（名作を決算の型で）に寄せる</td>
+</tr>
+<tr>
+<td>「シミュレーション好き」だけに届き、客層が狭くなる（参考動画の警告）</td>
+<td>タイトル・サムネは街づくりを知らなくても分かる言葉と絵にする。2本目以降で反応を見る</td>
+</tr>
+<tr>
+<td>初見で地味な時間が長い（道路を引くだけの時間など）</td>
+<td>1時間ごとの変化と問題・解決だけ残す。倍速・早送りを多用</td>
+</tr>
+<tr>
+<td>12時間で「大都市」に届かず絵が地味</td>
+<td>最初の1時間の伸び方で目標を調整。届かなければ「12時間でここまで」を正直に見せ、決算で数字を強調</td>
+</tr>
+<tr>
+<td>ゲームの仕組みの説明が多くなる</td>
+<td>相方（ツッコミ兼解説役）の一言で済ませる。説明のための説明はしない</td>
+</tr>
+<tr>
+<td>競合（Cities のゆっくり実況）が未調査</td>
+<td>撮影前に10本確認（G0）</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-001-cities2-idea--次の動画への導線">次の動画への導線</h2>
+<ul>
+<li>2本目は RimWorld（コロニー経営）。「次は街ではなく、ゼロから集落を12時間で」と予告できる（シリーズの型が同じなので導線が自然）</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--想定視聴者">想定視聴者</h2>
+<ul>
+<li>街づくり・シミュレーションが好きな人</li>
+<li>「ゼロから育つ」動画をながら見する人（長く見る層）</li>
+<li>Cities を買うか迷っている人</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--タイトル案">タイトル案</h2>
+<ol>
+<li>初見がゼロから12時間で街を作ったら人口何人になる？【Cities: Skylines II】</li>
+<li>何もない土地から12時間で大都市を作る【ゆっくり実況】</li>
+<li>街づくり初見、12時間でどこまで発展できるか【シティーズスカイライン2】</li>
+</ol>
+<h2 id="d-videos-001-cities2-idea--サムネ案">サムネ案</h2>
+<ul>
+<li>型を固定（キャラの位置・配色・フォント・右上に「12時間」のロゴなど。シリーズで共通）</li>
+<li>左: 何もない土地（0h）→ 右: 都市の俯瞰（12h）。数字は人口だけを大きく</li>
+</ul>
+<h2 id="d-videos-001-cities2-idea--撮影前チェックg0">撮影前チェック（G0）</h2>
+<ul>
+<li>[ ] Cities のゆっくり実況10本の確認（最近の伸び・切り口の被り）</li>
+<li>[ ] 録画設定の確認（別の空マップで5分。街づくりはしない）</li>
+<li>[ ] 本番の最初の1時間で録画が正常か確認し、伸び方を見て目標人口を決める（試しプレイはしない。初見の反応を失うため）</li>
+<li>[ ] 12時間の数え方（ポーズ中を含めるか）を決める</li>
+<li>[ ] 決算画面のレイアウトを作る</li>
+<li>[ ] キャラ・サムネとテロップの型を決める</li>
+<li>[ ] 仮説を <a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> に書く</li>
+</ul>
+</article>
+<article id="d-videos-001-cities2-postmortem" hidden><div class="src">videos/001-cities2/postmortem.md</div>
+<h1 id="d-videos-001-cities2-postmortem--001-事後分析公開後に記入">001 事後分析（公開後に記入）</h1>
+<p>公開日: ＿＿＿＿ ／ 制作総時間: プレイ＿h・編集＿h</p>
+<h2 id="d-videos-001-cities2-postmortem--仮説の確認experimentshypothesesmd-と対応">仮説の確認（<a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> と対応）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>仮説</th>
+<th>結果</th>
+<th>正しかったか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-001-cities2-postmortem--数値">数値</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th>24h</th>
+<th>7日</th>
+<th>30日</th>
+<th>90日</th>
+<th>180日</th>
+<th>365日</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>再生数</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>インプレッション</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CTR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>30秒維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴時間</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>新規／リピーター</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>登録率・高評価率・コメント率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>流入元（ホーム・関連・検索・ブラウジング）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>他の動画を視聴した視聴者（002など）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-001-cities2-postmortem--学び次への反映">学び・次への反映</h2>
+<ul>
+<li></li>
+</ul>
+</article>
+<article id="d-videos-001-cities2-script-sample" hidden><div class="src">videos/001-cities2/script-sample.md</div>
+<h1 id="d-videos-001-cities2-script-sample--001-台本サンプル-v5雰囲気確認用">001 台本サンプル v5（雰囲気確認用）</h1>
+<p>ゆっくり実況の文字起こし4本の分析を反映（<a class="doclink" href="#d-research-yukkuri-tone"><code>research/YUKKURI_TONE.md</code></a>）。v5 はパクリ点検（<a class="doclink" href="#d-docs-originality"><code>docs/ORIGINALITY.md</code></a>）で冒頭と締めを差し替え、フラグ→回収を追加。<br>
+霊夢＝主人公・ボケ・悪役寄り、魔理沙＝ツッコミ・良心。【】はテロップ。※ ゲームの数字・出来事は仮。</p>
+<h2 id="d-videos-001-cities2-script-sample--冒頭の茶番">冒頭の茶番</h2>
+<p>霊夢「本日より、市長に就任しました」<br>
+魔理沙「選挙は？」<br>
+霊夢「立候補したのが私だけだったの」<br>
+魔理沙「そもそも住民がゼロだからな」<br>
+霊夢「つまり満場一致よ」<br>
+【有権者　0人】</p>
+<h2 id="d-videos-001-cities2-script-sample--本題へ">本題へ</h2>
+<p>霊夢「というわけで、街づくり完全初見の私が、何もない土地から12時間で大都市を作るわ」<br>
+魔理沙「目標は？」<br>
+霊夢「人口10万。あと税収」<br>
+魔理沙「税収を目標に入れるな」<br>
+霊夢「やることは簡単。道路を引いて、家と店と工場の場所を塗れば、勝手に人が住み着くの」<br>
+魔理沙「説明だけ聞くと楽そうだな」<br>
+霊夢「楽よ。私が市長だもの」<br>
+魔理沙「そこが一番の不安要素だぜ」</p>
+<h2 id="d-videos-001-cities2-script-sample--序盤">序盤</h2>
+<p>霊夢「まずはメインの道路。名前は『霊夢通り』にします」<br>
+魔理沙「自分の名前をつけるタイプの市長か」<br>
+霊夢「街の中心を一本で貫く。これで渋滞は起きない。完璧ね」<br>
+【※完璧ではありませんでした】</p>
+<p>（早送り）<br>
+【1時間目　人口 0 → 480人】<br>
+魔理沙「水と電気は？」<br>
+霊夢「……ただいま必要経費を計算中です」<br>
+魔理沙「まだ払ってすらないのか」<br>
+【市民480人、全員キャンプ中】</p>
+<h2 id="d-videos-001-cities2-script-sample--山場自業自得の大事故">山場（自業自得の大事故）</h2>
+<p>【5時間目】<br>
+霊夢「霊夢通り、混んでるわね」<br>
+魔理沙「混んでるってレベルじゃないぜ。動いてない」<br>
+霊夢「わかった。霊夢通りを広げます」<br>
+魔理沙「道沿いの家はどうする」<br>
+霊夢「必要経費です」<br>
+（家が一列まるごと消える）<br>
+【立ち退き　312世帯】<br>
+魔理沙「決算に響くぞ」<br>
+霊夢「人は去っても、道路は残る」<br>
+魔理沙「名言っぽく言うな」</p>
+<p>（広げた霊夢通りも、また真っ赤に詰まる）<br>
+霊夢「……」<br>
+魔理沙「……」<br>
+【霊夢通り、2車線増えて渋滞も2倍】</p>
+<h2 id="d-videos-001-cities2-script-sample--決算">決算</h2>
+<p>魔理沙「決算の時間だぜ」<br>
+魔理沙「人口、4万8千人。立ち退き、合計1,200世帯」<br>
+霊夢「街のために去っていった英雄たちよ」<br>
+魔理沙「追い出したのお前だぜ」<br>
+魔理沙「今回のMVP」<br>
+霊夢「霊夢通り」<br>
+魔理沙「今回のワースト」<br>
+霊夢「霊夢通り」<br>
+【霊夢通り、両部門受賞】<br>
+霊夢「次の街にも霊夢通りは作るわ」<br>
+魔理沙「懲りろ」</p>
+</article>
+<article id="d-videos-archive-v1-001-create-idea" hidden><div class="src">videos/_archive-v1/001-create/idea.md</div>
+<h1 id="d-videos-archive-v1-001-create-idea--001-minecraft-create">001 Minecraft Create</h1>
+<p>ステータス: <strong>保留</strong>（2026-10-07「工業にこだわらない」方針で初期3本を再設計中。<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §8）</p>
+<blockquote>
+<p>⚠️ 2026-10-07 更新: 時間予算（週12h）に合わせ、<strong>プレイ時間を15〜20時間に縮小</strong>する方針（<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §6.5）。下のプレイ時間・終了条件は縮小後の規模に合わせて見直す。完成尺は45〜70分を維持。</p>
+</blockquote>
+<h2 id="d-videos-archive-v1-001-create-idea--一文企画">一文企画</h2>
+<p><strong>サバイバルのMinecraftで、手作業ゼロで勝手に素材が作られ続ける巨大工場を、何もない状態から作る。</strong></p>
+<h2 id="d-videos-archive-v1-001-create-idea--視聴者がクリックする理由">視聴者がクリックする理由</h2>
+<ul>
+<li>Create を知らなくても「何もしなくても全部作られる」の意味が分かる</li>
+<li>「何もない → 巨大」という成長の快感が見た目で伝わる</li>
+<li>Minecraft という大きな入口がある</li>
+</ul>
+<h2 id="d-videos-archive-v1-001-create-idea--ゴール終了条件撮影前に固定">ゴール・終了条件（撮影前に固定）</h2>
+<p>候補（要ユーザー判断・どれか1つに絞る）:</p>
+<ul>
+<li><strong>A（推奨）</strong>: 「ボタン1つ／チェストに入れるだけで、ネザライト装備一式まで全自動で出てくる」状態。最後に毎分の生産量と所要時間を数字で見せる</li>
+<li>B: 「全アイテム自動倉庫」。扱うアイテム数が大きく、見た目も派手だが、制作量が膨らみやすい</li>
+<li>C: 「手でクラフトしないで、エンドラ討伐まで」。縛りフォーマットとして強いが、Create 以外の要素が増える</li>
+</ul>
+<p>終了条件が決まるまで撮影しない。<strong>最終成果は数字で示す</strong>（生産量・面積・総プレイ時間）。</p>
+<h2 id="d-videos-archive-v1-001-create-idea--想定プレイ時間完成尺">想定プレイ時間・完成尺</h2>
+<ul>
+<li>プレイ: 30〜45時間（上限45時間。超過時は規模を縮小）</li>
+<li>完成尺: 50〜65分（面白い素材が45分なら45分）</li>
+</ul>
+<p>目安:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>時間</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0〜5h</td>
+<td>序盤・素材集め（手作業のつらさを見せる）</td>
+</tr>
+<tr>
+<td>5〜12h</td>
+<td>最初の自動化</td>
+</tr>
+<tr>
+<td>12〜25h</td>
+<td>工場拡張</td>
+</tr>
+<tr>
+<td>25〜35h</td>
+<td>巨大化</td>
+</tr>
+<tr>
+<td>35〜45h</td>
+<td>最終目標・仕上げ・撮影</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-001-create-idea--最大のリスクと対策">最大のリスクと対策</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>リスク</th>
+<th>対策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「Create解説」になって一般視聴者が離脱</td>
+<td>設備名ではなく「何が自動になったか」で語る。専門用語はテロップで1行説明、深掘りは中盤以降</td>
+</tr>
+<tr>
+<td>競合が多い（Create 動画は海外・国内ともに多数。<strong>未調査</strong>）</td>
+<td>Phase 3 で同種企画の小規模チャンネルの伸びを確認してから撮影。差別化は<strong>終了条件と数字</strong>で作る</td>
+</tr>
+<tr>
+<td>MODのバージョン更新で動画が古くなる</td>
+<td>タイトル・サムネにバージョンを入れない。バージョンは概要欄に記載</td>
+</tr>
+<tr>
+<td>30〜45時間が重く、中だるみ・撮影の失敗</td>
+<td>撮影前に「見せ場」を事前に10個ほど決め、素材の取捨選択基準にする（<a class="doclink" href="#d-videos-archive-v1-001-create-plan"><code>plan.md</code></a>）</td>
+</tr>
+<tr>
+<td>1本だけで終わる</td>
+<td>次動画への導線を最初から設計（下記）</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-001-create-idea--次動画への導線">次動画への導線</h2>
+<ul>
+<li>動画内の最後に「次は純粋な自動化の最高峰 Factorio で」と<strong>予告</strong>（約10秒）。終了画面に002への導線を置く</li>
+<li>概要欄にチャプターと関連動画リンク</li>
+<li>※002公開前は「近日公開」とし、公開後に差し替える</li>
+</ul>
+<h2 id="d-videos-archive-v1-001-create-idea--想定視聴者">想定視聴者</h2>
+<ul>
+<li>Minecraft 視聴者（Create 未経験含む）</li>
+<li>自動化・工場が好きなゲーム全般の視聴者</li>
+<li>Create 経験者（深掘りパートの受け皿）</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-001-create-plan" hidden><div class="src">videos/_archive-v1/001-create/plan.md</div>
+<h1 id="d-videos-archive-v1-001-create-plan--001-動画構成撮影計画">001 動画構成・撮影計画</h1>
+<h2 id="d-videos-archive-v1-001-create-plan--構成テンプレート成長物語">構成テンプレート（成長物語）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>時間（目安）</th>
+<th>内容</th>
+<th>狙い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0:00</td>
+<td>最終形を数秒〜十数秒見せる（毎分の生産量・巨大さ）</td>
+<td>完走する理由を作る</td>
+</tr>
+<tr>
+<td>0:30</td>
+<td>開始地点（何もない・手作業）</td>
+<td>Before の提示</td>
+</tr>
+<tr>
+<td>〜5:00</td>
+<td>手作業のつらさ→最初の小さな自動化</td>
+<td>最初の成功体験</td>
+</tr>
+<tr>
+<td>5:00〜20:00</td>
+<td>小さな装置の連鎖。規模が見て分かる変化</td>
+<td>成長の快感</td>
+</tr>
+<tr>
+<td>〜25:00</td>
+<td><strong>問題発生1</strong>（資源不足・設計ミス・動力不足など）</td>
+<td>山場1</td>
+</tr>
+<tr>
+<td>〜35:00</td>
+<td>解決・さらに巨大化</td>
+<td>山場2</td>
+</tr>
+<tr>
+<td>〜45:00</td>
+<td><strong>問題発生2</strong>（スケールの壁）→大改造</td>
+<td>中盤の山</td>
+</tr>
+<tr>
+<td>〜55:00</td>
+<td>最終目標達成</td>
+<td>クライマックス</td>
+</tr>
+<tr>
+<td>ラスト</td>
+<td>数字で成果を見せる→次動画の予告</td>
+<td>次への導線</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-001-create-plan--最初の30秒案">最初の30秒（案）</h2>
+<ol>
+<li>最終形（巨大な工場の俯瞰＋自動で動く様子）</li>
+<li>「ここまで来るのに○○時間かかりました。最初はこれです」</li>
+<li>何もない状態のワールドへ切り替え</li>
+</ol>
+<h2 id="d-videos-archive-v1-001-create-plan--見せ場リスト撮影前に10個決めておく">見せ場リスト（撮影前に10個決めておく）</h2>
+<p>撮影前に記入: ＿＿＿＿＿＿（例: 最初の自動化に成功した瞬間／最初の大失敗／巨大化の俯瞰／最終稼働）</p>
+<h2 id="d-videos-archive-v1-001-create-plan--素材の取捨選択ルールこの作業は動画に必要か">素材の取捨選択ルール（「この作業は動画に必要か」）</h2>
+<ul>
+<li>目標に直結しない寄り道・資源集めの単調作業 → カット／倍速</li>
+<li>問題と解決が1セットで映っている → 残す</li>
+<li>成長が目で見える変化（Before/After） → 残す</li>
+<li>説明が必要な設備が増える場面 → 1行テロップに圧縮</li>
+</ul>
+<h2 id="d-videos-archive-v1-001-create-plan--撮影制作チェックリスト">撮影・制作チェックリスト</h2>
+<ul>
+<li>[ ] 終了条件を固定（idea.md）</li>
+<li>[ ] 競合調査（G0）</li>
+<li>[ ] 見せ場リスト</li>
+<li>[ ] 進行ログ（撮影時間ごとの到達点）</li>
+<li>[ ] 15時間時点・30時間時点で「企画から脱線していないか」を確認</li>
+<li>[ ] 台本・音声・カット・テロップ・SE・BGM</li>
+<li>[ ] タイトル・サムネ確定（<a class="doclink" href="#d-videos-archive-v1-001-create-title-thumbnail"><code>title-thumbnail.md</code></a>）</li>
+<li>[ ] 仮説記録（<a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a>）を投稿前に書く</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-001-create-postmortem" hidden><div class="src">videos/_archive-v1/001-create/postmortem.md</div>
+<h1 id="d-videos-archive-v1-001-create-postmortem--001-事後分析公開後に記入">001 事後分析（公開後に記入）</h1>
+<p>公開日: ＿＿＿＿ ／ 制作総時間: プレイ＿h・編集＿h</p>
+<h2 id="d-videos-archive-v1-001-create-postmortem--仮説の確認experimentshypothesesmd-と対応">仮説の確認（<a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> と対応）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>仮説</th>
+<th>結果</th>
+<th>正しかったか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-001-create-postmortem--数値">数値</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th>24h</th>
+<th>7日</th>
+<th>30日</th>
+<th>90日</th>
+<th>180日</th>
+<th>365日</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>再生数</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>インプレッション</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CTR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>30秒維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴時間</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>新規／リピーター</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>登録率・高評価率・コメント率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>流入元（ホーム・関連・検索・ブラウジング）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>他の動画を視聴した視聴者（002など）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-001-create-postmortem--学び次への反映">学び・次への反映</h2>
+<ul>
+<li></li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-001-create-research" hidden><div class="src">videos/_archive-v1/001-create/research.md</div>
+<h1 id="d-videos-archive-v1-001-create-research--001-調査メモ">001 調査メモ</h1>
+<p>取得日: 2026-10-07 / 凡例: ✅取得 ⚠️要再確認 ❌未取得</p>
+<h2 id="d-videos-archive-v1-001-create-research--需要">需要</h2>
+<ul>
+<li>⚠️ Create MOD ダウンロード数: CurseForge 約1.868億 + Modrinth 約1,730万（2026-04-21時点。検索結果の二次情報）</li>
+<li>❌ Minecraft 全体の需要（YouTube検索ボリューム／Google Trends）</li>
+<li>❌ 日本のCreate需要（日本語検索量・日本語動画数）</li>
+</ul>
+<h2 id="d-videos-archive-v1-001-create-research--競合未調査--g0-の前提">競合（未調査 — G0 の前提）</h2>
+<p>調べること:</p>
+<ul>
+<li>「Minecraft 全自動 工場」「Create 全自動」「Create 日本語 ゆっくり」などの検索上位動画</li>
+<li><strong>登録者1万人未満で10万再生以上</strong>の動画（企画に力がある例）</li>
+<li>公開から1年以上経っても再生されている動画（資産性）</li>
+<li>同企画でゆっくり実況形式の動画の有無</li>
+</ul>
+<h2 id="d-videos-archive-v1-001-create-research--未解決の問い">未解決の問い</h2>
+<ul>
+<li>日本語圏で「Create × 長尺ゆっくり」の需要は十分か</li>
+<li>企画の差別化を終了条件・数字でどこまで作れるか</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-001-create-title-thumbnail" hidden><div class="src">videos/_archive-v1/001-create/title-thumbnail.md</div>
+<h1 id="d-videos-archive-v1-001-create-title-thumbnail--001-タイトルサムネ案">001 タイトル・サムネ案</h1>
+<p>原則: 専門知識を要求しない。何がすごいかがタイトルだけで分かる。サムネは Before→After／小さい→巨大。文字は少なく。</p>
+<h2 id="d-videos-archive-v1-001-create-title-thumbnail--タイトル候補">タイトル候補</h2>
+<ol>
+<li>Minecraftで一切働かなくても全部作られる巨大工場を作った</li>
+<li>何もないMinecraftから、全自動で装備が出てくる工場を作る【ゆっくり実況】</li>
+<li>Minecraftで「手作業ゼロ」の巨大工場を作った結果</li>
+<li>ボタン1つでネザライト装備が出てくるMinecraft工場</li>
+</ol>
+<p>避ける: 「Create」「メカニカル〜」「rpm」などの用語、バージョン番号。</p>
+<h2 id="d-videos-archive-v1-001-create-title-thumbnail--サムネ案">サムネ案</h2>
+<ul>
+<li>左: 手で作業している小さな主人公 → 右: 巨大な工場の俯瞰（Before/After）</li>
+<li>数字を1つだけ大きく（例: 「毎分○○個」）。文字は6文字以内</li>
+<li>色: 背景は暗く、工場側にのみ強い彩度を置く</li>
+</ul>
+<h2 id="d-videos-archive-v1-001-create-title-thumbnail--検証したい点">検証したい点</h2>
+<ul>
+<li>「働かなくても」型 vs 「手作業ゼロ」型 vs 数字型のどれがCTRが高いか（公開後のサムネ/タイトル比較機能が使える場合は活用）</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-002-factorio-idea" hidden><div class="src">videos/_archive-v1/002-factorio/idea.md</div>
+<h1 id="d-videos-archive-v1-002-factorio-idea--002-factorio">002 Factorio</h1>
+<p>ステータス: <strong>保留</strong>（2026-10-07「工業にこだわらない」方針で初期3本を再設計中。<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §8）</p>
+<blockquote>
+<p>⚠️ 2026-10-07 更新: 時間予算（週12h）に合わせ、<strong>プレイ時間を15〜20時間に縮小</strong>する方針（<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §6.5）。下のプレイ時間・終了条件は縮小後の規模に合わせて見直す。完成尺は45〜70分を維持。</p>
+</blockquote>
+<h2 id="d-videos-archive-v1-002-factorio-idea--一文企画">一文企画</h2>
+<p><strong>Factorioで「手でクラフトしない（ハンドクラフト禁止）」縛りのまま、何もない状態からロケット打ち上げまで工場を育てる。</strong></p>
+<h2 id="d-videos-archive-v1-002-factorio-idea--企画の選び方要ユーザー判断">企画の選び方（要ユーザー判断）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>案</th>
+<th>内容</th>
+<th>長所</th>
+<th>短所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A（推奨）</td>
+<td>ハンドクラフト禁止でロケット打ち上げ</td>
+<td>「手作業を捨てる」が分かりやすい。終了条件が明確。Factorioでは知られた縛り</td>
+<td>縛りが難しすぎるとプレイが長引く</td>
+</tr>
+<tr>
+<td>B</td>
+<td>全自動で毎分X個の生産ラインを作る（数字型）</td>
+<td>数字で成果が見える</td>
+<td>ゲームを知らないと「毎分X個」の価値が分かりにくい</td>
+</tr>
+<tr>
+<td>C</td>
+<td>「何もしなくても全部作られる工場」</td>
+<td>001 と体験が揃う（導線が強い）</td>
+<td>終了条件が曖昧になりやすい</td>
+</tr>
+</tbody>
+</table></div>
+<p>001 が Create で「完全自動化」を売るので、<strong>002 は同じ体験（手作業→全自動）を、より純粋な形で見せる</strong>のが導線として自然。A は001との接続が強い。</p>
+<h2 id="d-videos-archive-v1-002-factorio-idea--視聴者がクリックする理由">視聴者がクリックする理由</h2>
+<ul>
+<li>「手でクラフトしないで」だけで難しそう・すごそう、が伝わる</li>
+<li>荒野→巨大工場→ロケットの変化が見た目で分かる</li>
+<li>Factorio 経験者には縛りの面白さ、未経験者には「巨大化」の面白さ</li>
+</ul>
+<h2 id="d-videos-archive-v1-002-factorio-idea--ゴール終了条件">ゴール・終了条件</h2>
+<ul>
+<li>ロケット打ち上げ（ベースゲーム。Space Age はやらない）</li>
+<li>最終成果: 総プレイ時間・生産量（毎分）・工場の面積などを数字で提示</li>
+<li><strong>撮影前に終了条件を固定</strong>。到達しなければ25〜40時間を上限に規模を見直す</li>
+</ul>
+<h2 id="d-videos-archive-v1-002-factorio-idea--想定プレイ時間完成尺">想定プレイ時間・完成尺</h2>
+<ul>
+<li>プレイ: 25〜40時間（ハンドクラフト禁止は通常より長引く可能性あり。<strong>テストプレイで時間を測ってから決める</strong>）</li>
+<li>完成尺: 50〜65分</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>時間</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0〜4h</td>
+<td>手作業（ハンドクラフト禁止の苦しさ）</td>
+</tr>
+<tr>
+<td>4〜10h</td>
+<td>基礎自動化</td>
+</tr>
+<tr>
+<td>10〜18h</td>
+<td>本格工場</td>
+</tr>
+<tr>
+<td>18〜28h</td>
+<td>拡張</td>
+</tr>
+<tr>
+<td>28〜40h</td>
+<td>最終形・打ち上げ</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-002-factorio-idea--最大のリスクと対策">最大のリスクと対策</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>リスク</th>
+<th>対策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>説明が難しくて初見が離脱</td>
+<td>冒頭は結果と縛りだけ。専門用語は最小限、概念は「素材→部品→完成品」のように言い換える</td>
+</tr>
+<tr>
+<td>ハンドクラフト禁止が重すぎて時間が膨らむ</td>
+<td>事前テストプレイで見積もり。終了条件を緩める選択肢を準備（例: 初期のみ許可）</td>
+</tr>
+<tr>
+<td>競合（国内外のFactorio実況は多数。<strong>未調査</strong>）</td>
+<td>Phase 3 で縛り企画の小規模チャンネルの伸びを確認。差別化は縛り＋数字</td>
+</tr>
+<tr>
+<td>001 の視聴者が流れてこない</td>
+<td>概要欄・終了画面に導線。流れなければ G3 で分岐 B/C へ</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-002-factorio-idea--次動画への導線">次動画への導線</h2>
+<ul>
+<li>ラストで次の候補（Satisfactory または Cities）を予告。<strong>003 の中身は G2 で確定するので、予告は「次は別の工場」程度に留める</strong></li>
+</ul>
+<h2 id="d-videos-archive-v1-002-factorio-idea--想定視聴者">想定視聴者</h2>
+<ul>
+<li>001 の視聴者のうち、より純粋な自動化に興味がある層</li>
+<li>Factorio 経験者・未経験者（「巨大化」目当て）</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-002-factorio-plan" hidden><div class="src">videos/_archive-v1/002-factorio/plan.md</div>
+<h1 id="d-videos-archive-v1-002-factorio-plan--002-動画構成撮影計画">002 動画構成・撮影計画</h1>
+<p>構成は 001 と同じ成長物語（<a class="doclink" href="#d-videos-archive-v1-001-create-plan"><code>../001-create/plan.md</code></a> 参照）。Factorio 固有の注意のみ記載。</p>
+<h2 id="d-videos-archive-v1-002-factorio-plan--固有の注意">固有の注意</h2>
+<ul>
+<li><strong>無限に拡張できるため、終了条件を撮影前に固定</strong>（ロケット打ち上げ）</li>
+<li>初期の手作業パートは短く。縛りの苦しさを見せたら次へ</li>
+<li>山場の候補: 資源枯渇・電力不足・敵（エイリアン）の襲撃・設計のやり直し</li>
+<li>工業の説明は「問題→解決」の流れの中だけで行う（説明のための説明をしない）</li>
+</ul>
+<h2 id="d-videos-archive-v1-002-factorio-plan--最初の30秒案">最初の30秒（案）</h2>
+<ol>
+<li>打ち上げるロケットと巨大工場の俯瞰</li>
+<li>「ここまで一度も手でクラフトしていません」</li>
+<li>荒野の開始地点へ</li>
+</ol>
+<h2 id="d-videos-archive-v1-002-factorio-plan--事前テストプレイg0">事前テストプレイ（G0）</h2>
+<ul>
+<li>縛りありで最初の5時間をプレイし、全体時間を見積もる</li>
+<li>見積もりが40時間を超える場合は縛りを緩める</li>
+</ul>
+<h2 id="d-videos-archive-v1-002-factorio-plan--チェックリスト">チェックリスト</h2>
+<ul>
+<li>[ ] 終了条件固定／テストプレイ</li>
+<li>[ ] 競合調査</li>
+<li>[ ] 見せ場リスト（10個）</li>
+<li>[ ] 台本・音声・カット・テロップ・SE・BGM</li>
+<li>[ ] タイトル・サムネ／仮説記録</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-002-factorio-postmortem" hidden><div class="src">videos/_archive-v1/002-factorio/postmortem.md</div>
+<h1 id="d-videos-archive-v1-002-factorio-postmortem--002-事後分析公開後に記入">002 事後分析（公開後に記入）</h1>
+<p>公開日: ＿＿＿＿ ／ 制作総時間: プレイ＿h・編集＿h</p>
+<h2 id="d-videos-archive-v1-002-factorio-postmortem--仮説の確認experimentshypothesesmd-と対応">仮説の確認（<a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> と対応）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>仮説</th>
+<th>結果</th>
+<th>正しかったか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-002-factorio-postmortem--数値">数値</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th>24h</th>
+<th>7日</th>
+<th>30日</th>
+<th>90日</th>
+<th>180日</th>
+<th>365日</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>再生数</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>インプレッション</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CTR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>30秒維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴時間</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>新規／リピーター</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>登録率・高評価率・コメント率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>流入元（ホーム・関連・検索・ブラウジング）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>他の動画を視聴した視聴者（002など）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-002-factorio-postmortem--学び次への反映">学び・次への反映</h2>
+<ul>
+<li></li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-002-factorio-research" hidden><div class="src">videos/_archive-v1/002-factorio/research.md</div>
+<h1 id="d-videos-archive-v1-002-factorio-research--002-調査メモ">002 調査メモ</h1>
+<p>取得日: 2026-10-07 / 凡例: ✅取得 ⚠️要再確認 ❌未取得</p>
+<h2 id="d-videos-archive-v1-002-factorio-research--需要人口">需要・人口</h2>
+<ul>
+<li>⚠️ Steam 同時接続（月次）: 2026年1月 平均18,003／ピーク31,268、2月 17,372／29,515、3月 15,965／26,899、4月 15,488／25,712、5月 16,173／25,545、6月 16,467／27,336。直近30日（7月初頭）平均17,168／ピーク28,123（SteamDB等の集計を検索結果から二次取得）</li>
+<li>評価: 人口は大きく<strong>安定</strong>（月ごとの変動は数十%以内）。長期の資産としては良好</li>
+<li>❌ 過去3年の推移、Google Trends、YouTube検索ボリューム、日本語コミュニティ規模</li>
+</ul>
+<h2 id="d-videos-archive-v1-002-factorio-research--競合未調査">競合（未調査）</h2>
+<ul>
+<li>「Factorio 縛り」「Factorio ロケット」「Factorio 日本語 ゆっくり」の上位動画</li>
+<li>登録者少なく再生が多い縛り企画の有無</li>
+<li>ハンドクラフト禁止の既存動画の有無と再生数</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-002-factorio-title-thumbnail" hidden><div class="src">videos/_archive-v1/002-factorio/title-thumbnail.md</div>
+<h1 id="d-videos-archive-v1-002-factorio-title-thumbnail--002-タイトルサムネ案">002 タイトル・サムネ案</h1>
+<h2 id="d-videos-archive-v1-002-factorio-title-thumbnail--タイトル候補">タイトル候補</h2>
+<ol>
+<li>Factorioで一度も手でクラフトせずにロケットを飛ばした</li>
+<li>手作業を完全に捨てて、荒野から巨大工場を作ってロケットを打ち上げる</li>
+<li>何もない荒野から、全自動の工場でロケットを飛ばす【ゆっくり実況】</li>
+</ol>
+<p>避ける: 「サイエンスパック」「ビーコン」などの専門用語。</p>
+<h2 id="d-videos-archive-v1-002-factorio-title-thumbnail--サムネ案">サムネ案</h2>
+<ul>
+<li>左: 荒野と1人の主人公 → 右: 巨大工場とロケット</li>
+<li>数字は1つだけ（例: 総プレイ時間）。文字は短く</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-003-cities2-idea" hidden><div class="src">videos/_archive-v1/003-cities2/idea.md</div>
+<h1 id="d-videos-archive-v1-003-cities2-idea--003-cities-skylines-ii暫定">003 Cities: Skylines II（暫定）</h1>
+<p>ステータス: <strong>保留</strong>（初期3本を再設計中。<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §8）。G2（001公開から30日）で CS2 か Satisfactory かを決める。判断理由は <a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §4。</p>
+<h2 id="d-videos-archive-v1-003-cities2-idea--一文企画cs2-案">一文企画（CS2 案）</h2>
+<p><strong>人口10万人の都市を、公共交通だけで渋滞させずに成立させる。</strong></p>
+<h2 id="d-videos-archive-v1-003-cities2-idea--視聴者がクリックする理由">視聴者がクリックする理由</h2>
+<ul>
+<li>「渋滞がない」という結果が、ゲームを知らなくても分かる</li>
+<li>人口0→10万の Before/After が明確</li>
+<li>工業ゲームを知らない層にもブランドを広げられるかの検証になる</li>
+</ul>
+<h2 id="d-videos-archive-v1-003-cities2-idea--ゴール終了条件">ゴール・終了条件</h2>
+<ul>
+<li>人口10万人到達＋ピーク時の渋滞の定量的な成果（平均移動時間・渋滞率などをゲーム内統計で提示）</li>
+<li><strong>追加コンテンツの状況（Expansion Pass 2: 2026-09-16、Park Adventures: 2026年Q4予定）と現在のパッチ状態を撮影前に確認</strong>。ルールが変わると企画が古くなる</li>
+</ul>
+<h2 id="d-videos-archive-v1-003-cities2-idea--想定プレイ時間完成尺">想定プレイ時間・完成尺</h2>
+<ul>
+<li>プレイ: 20〜30時間</li>
+<li>完成尺: 45〜60分</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>時間</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0〜3h</td>
+<td>街の基礎</td>
+</tr>
+<tr>
+<td>3〜8h</td>
+<td>人口拡大</td>
+</tr>
+<tr>
+<td>8〜15h</td>
+<td>問題発生（渋滞・財政など）</td>
+</tr>
+<tr>
+<td>15〜22h</td>
+<td>交通・都市改造</td>
+</tr>
+<tr>
+<td>22〜30h</td>
+<td>最終調整</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-003-cities2-idea--最大のリスクと対策">最大のリスクと対策</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>リスク</th>
+<th>対策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>アップデート依存</strong>で寿命が短い（運営変更・追加コンテンツ・パッチで挙動が変わる）</td>
+<td>「ゲームの挙動」ではなく「都市を作る快感・結果」に寄せる。撮影前に直近パッチを確認。タイトルに仕様名を入れない</td>
+</tr>
+<tr>
+<td>人口が小さめ（2026年6月 平均約9,500、ピーク約16,400 ※要再確認）</td>
+<td>上限は小さい。<strong>投資として小さい</strong>と認識し、制作を20時間以内に抑える</td>
+</tr>
+<tr>
+<td>工業客層との重なりが未検証（F1）</td>
+<td>G2 で001のデータを見て、重なりがなければ Satisfactory に切り替える</td>
+</tr>
+<tr>
+<td>ゲーム自体の評価・不具合（長期の需要に影響）</td>
+<td>撮影前に直近のレビュー・不具合状況を確認</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-003-cities2-idea--次動画への導線">次動画への導線</h2>
+<ul>
+<li>「都市の次は〜」と予告できるのは、G3 の結果を見てから決める</li>
+</ul>
+<h2 id="d-videos-archive-v1-003-cities2-idea--想定視聴者">想定視聴者</h2>
+<ul>
+<li>都市開発・経営シミュ視聴者（Cities: Skylines 1 の視聴者を含む）</li>
+<li>001/002 の視聴者のうち、「発展」の快感に反応する層</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-003-cities2-plan" hidden><div class="src">videos/_archive-v1/003-cities2/plan.md</div>
+<h1 id="d-videos-archive-v1-003-cities2-plan--003-動画構成撮影計画暫定">003 動画構成・撮影計画（暫定）</h1>
+<p>構成は 001 と同じ成長物語（<a class="doclink" href="#d-videos-archive-v1-001-create-plan"><code>../001-create/plan.md</code></a>）。003 が Satisfactory に変わった場合はこのファイルを作り直す。</p>
+<h2 id="d-videos-archive-v1-003-cities2-plan--cs2-固有の注意">CS2 固有の注意</h2>
+<ul>
+<li>撮影前に直近パッチ・追加コンテンツの状況を確認し、企画が古くならないか判断（G0）</li>
+<li>問題発生の候補: 渋滞・財政悪化・住宅/雇用の偏り・公共交通の不人気</li>
+<li>成果は<strong>ゲーム内の統計</strong>（人口・平均移動時間・渋滞率）で数字にして見せる</li>
+<li>Before/After は都市の俯瞰と交通量ヒートマップで見せる</li>
+</ul>
+<h2 id="d-videos-archive-v1-003-cities2-plan--最初の30秒案">最初の30秒（案）</h2>
+<ol>
+<li>人口10万人・渋滞ゼロの最終形の俯瞰</li>
+<li>「最初はこの空き地でした」</li>
+<li>開始地点へ</li>
+</ol>
+<h2 id="d-videos-archive-v1-003-cities2-plan--チェックリスト">チェックリスト</h2>
+<ul>
+<li>[ ] G2 で 003 を CS2 にするか確定</li>
+<li>[ ] 直近パッチ・レビュー確認</li>
+<li>[ ] 終了条件固定／見せ場リスト／競合調査</li>
+<li>[ ] 台本・音声・カット・テロップ・SE・BGM</li>
+<li>[ ] タイトル・サムネ／仮説記録</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-003-cities2-postmortem" hidden><div class="src">videos/_archive-v1/003-cities2/postmortem.md</div>
+<h1 id="d-videos-archive-v1-003-cities2-postmortem--003-事後分析公開後に記入">003 事後分析（公開後に記入）</h1>
+<p>公開日: ＿＿＿＿ ／ 制作総時間: プレイ＿h・編集＿h</p>
+<h2 id="d-videos-archive-v1-003-cities2-postmortem--仮説の確認experimentshypothesesmd-と対応">仮説の確認（<a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> と対応）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>仮説</th>
+<th>結果</th>
+<th>正しかったか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-003-cities2-postmortem--数値">数値</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th>24h</th>
+<th>7日</th>
+<th>30日</th>
+<th>90日</th>
+<th>180日</th>
+<th>365日</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>再生数</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>インプレッション</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CTR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>30秒維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴時間</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>新規／リピーター</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>登録率・高評価率・コメント率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>流入元（ホーム・関連・検索・ブラウジング）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>他の動画を視聴した視聴者（002など）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-archive-v1-003-cities2-postmortem--学び次への反映">学び・次への反映</h2>
+<ul>
+<li></li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-003-cities2-research" hidden><div class="src">videos/_archive-v1/003-cities2/research.md</div>
+<h1 id="d-videos-archive-v1-003-cities2-research--003-調査メモcs2">003 調査メモ（CS2）</h1>
+<p>取得日: 2026-10-07 / 凡例: ✅取得 ⚠️要再確認 ❌未取得</p>
+<ul>
+<li>⚠️ Steam 同時接続: 2026年6月 平均9,524／ピーク16,426。直近の1日平均は約9,300〜10,400。過去最高24,440（2025年11月）。ある時点の同時接続 約12,480（二次情報）</li>
+<li>⚠️ 運営: Iceflake Studios が2025年末に開発を引き継ぎ。Expansion Pass 2（€44.99）が2026-09-16に発売。Park Adventures を2026年Q4に予定</li>
+<li>❌ 日本のCS2需要・日本語動画数・過去の動画の寿命（アップデートで古くなる割合）</li>
+<li>❌ CS1（前作）視聴者がCS2へ流れているか</li>
+<li>❌ 工業系視聴者との重なり（001/002 公開後に実測）</li>
+</ul>
+</article>
+<article id="d-videos-archive-v1-003-cities2-title-thumbnail" hidden><div class="src">videos/_archive-v1/003-cities2/title-thumbnail.md</div>
+<h1 id="d-videos-archive-v1-003-cities2-title-thumbnail--003-タイトルサムネ案cs2-暫定">003 タイトル・サムネ案（CS2 暫定）</h1>
+<h2 id="d-videos-archive-v1-003-cities2-title-thumbnail--タイトル候補">タイトル候補</h2>
+<ol>
+<li>人口10万人なのに渋滞しない街を本気で作った</li>
+<li>公共交通だけで人口10万人の巨大都市を作る【ゆっくり実況】</li>
+<li>何もない空き地から、渋滞ゼロの巨大都市を作る</li>
+</ol>
+<h2 id="d-videos-archive-v1-003-cities2-title-thumbnail--サムネ案">サムネ案</h2>
+<ul>
+<li>左: 空き地・人口0 → 右: 巨大都市・人口100,000</li>
+<li>渋滞の赤い道路と、渋滞なしの比較も候補</li>
+</ul>
+</article>
+<article id="d-videos-candidates-stardew-idea" hidden><div class="src">videos/_candidates/stardew/idea.md</div>
+<h1 id="d-videos-candidates-stardew-idea--001-stardew-valley計画-v2-の1本目">001 Stardew Valley（計画 v2 の1本目）</h1>
+<p>ステータス: <strong>候補（案Z の3本目候補）</strong>。2026-10-07 にパクリ点検（<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §9）で1本目から外した。出す場合は「ゼロから12時間＋決算」の型に作り直す<br>
+前提: 初見プレイ・完成40〜50分・プレイ約12時間・編集約45時間（<a class="doclink" href="#d-docs-long-term-strategy"><code>docs/LONG_TERM_STRATEGY.md</code></a>）</p>
+<h2 id="d-videos-candidates-stardew-idea--一文企画">一文企画</h2>
+<p><strong>初見のプレイヤーが、何もない荒れ地から56日間（1年目の春〜夏）で、農場をどこまで大きくできるか。</strong></p>
+<h2 id="d-videos-candidates-stardew-idea--なぜこの形か">なぜこの形か</h2>
+<ul>
+<li>初見でも成立する「ゼロから発展」の成長物語（<a class="doclink" href="#d-docs-channel-strategy"><code>docs/CHANNEL_STRATEGY.md</code></a> §8.6）</li>
+<li>「全自動」「理論上最適」は初見では成立しない／嘘になるため使わない（§8.5）</li>
+<li>終了条件をゲーム内の日数で切るので、プレイ時間が読める
+<ul>
+<li>目安: ゲーム内1日 ≒ 現実の約12〜14分（1日をフルに使った場合。要実測）→ 56日 ≒ <strong>11〜13時間</strong></li>
+</ul>
+</li>
+<li>参考例でも新規チャンネルの1本目として実績がある名作（Steam 月平均 約5.9万〜7.6万 ⚠️）</li>
+</ul>
+<h2 id="d-videos-candidates-stardew-idea--視聴者がクリックする理由">視聴者がクリックする理由</h2>
+<ul>
+<li>「荒れ地 → 巨大な農場」の変化が一目で分かる（Before/After）</li>
+<li>「初見で」「56日で」という制限があり、結果が気になる</li>
+<li>数字で結果が出る（所持金・畑のマス数・作物の出荷数）</li>
+</ul>
+<h2 id="d-videos-candidates-stardew-idea--ゴール終了条件">ゴール・終了条件</h2>
+<ul>
+<li><strong>終了: 1年目の夏28日の夜</strong>（ゲーム内56日）</li>
+<li>最終成果を数字で見せる: 所持金／耕した畑のマス数／出荷した作物の数／家の増築や設備の数</li>
+<li>目標を1つ置くと見せ場が作りやすい（例: 「夏の終わりまでに所持金○○万G」）。<strong>目標額は試しプレイ後に決める</strong>（初見なので現実的な数字が分からない）</li>
+</ul>
+<h2 id="d-videos-candidates-stardew-idea--構成案4050分">構成案（40〜50分）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>時間</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0:00</td>
+<td>夏の終わりの農場の俯瞰と最終の所持金（最終形を先に見せる）</td>
+</tr>
+<tr>
+<td>0:30</td>
+<td>1日目: 荒れ地・所持金500G・何も分からない</td>
+</tr>
+<tr>
+<td>〜8分</td>
+<td>春の序盤: 最初の畑・最初の出荷（小さな成功）</td>
+</tr>
+<tr>
+<td>〜18分</td>
+<td>春の後半: お金の回し方が分かってくる・畑の拡大</td>
+</tr>
+<tr>
+<td>〜25分</td>
+<td><strong>問題発生</strong>（例: お金が足りない・体力切れ・作物が枯れる・季節の切り替わりで作物が全滅）</td>
+</tr>
+<tr>
+<td>〜38分</td>
+<td>夏: 解決と一気の拡大（スプリンクラー等で作業を楽にする＝「自動化」の要素はここで自然に入る）</td>
+</tr>
+<tr>
+<td>〜45分</td>
+<td>夏の最終日: 成果を数字で発表</td>
+</tr>
+<tr>
+<td>ラスト</td>
+<td>春1日目と夏28日目の比較（Before/After）→ 次の動画の予告</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>初見の失敗は見せ場</strong>（季節の変わり目で作物が枯れる等）。カットせず「問題発生→改善」の流れに使う。</p>
+<h2 id="d-videos-candidates-stardew-idea--最大のリスクと対策">最大のリスクと対策</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>リスク</th>
+<th>対策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>参考動画を見た後発と同じゲームで競合</td>
+<td>「初見×56日×数字」の企画で差別化。撮影前に最近の Stardew ゆっくり実況を10本確認（G0）</td>
+</tr>
+<tr>
+<td>初見で地味な日が続き、中だるみ</td>
+<td>毎日を見せない。週ごとの変化と問題・解決だけ残す。1日分は数秒〜数十秒に圧縮</td>
+</tr>
+<tr>
+<td>56日で「大きくなった」と言える規模に届かない</td>
+<td>試しプレイ（最初の数日）で伸び方を確認し、必要なら期間を「1年目まるごと」に延ばす（プレイ+約12時間）</td>
+</tr>
+<tr>
+<td>編集が想定（1分=1時間）より重い</td>
+<td>編集時間を毎日記録。1本目の実測で尺とテロップの量を見直す</td>
+</tr>
+<tr>
+<td>初見なのでテンポが悪くなる</td>
+<td>撮影中に「この日の見どころ」をメモしておき、編集で探す時間を減らす</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-candidates-stardew-idea--次の動画への導線">次の動画への導線</h2>
+<ul>
+<li>2本目は Palworld（3Dオープンワールド）。系統を変えて「ゲーム実況」の広い括りで認識させる（参考例の戦略）</li>
+<li>予告は「次は別のゲームでゼロから」程度に留める</li>
+</ul>
+<h2 id="d-videos-candidates-stardew-idea--想定視聴者">想定視聴者</h2>
+<ul>
+<li>Stardew を遊んだことがある人・気になっている人</li>
+<li>「ゼロから育つ」動画が好きなゲーム実況の視聴者（ながら見で長く見る層）</li>
+</ul>
+<h2 id="d-videos-candidates-stardew-idea--タイトル案">タイトル案</h2>
+<ol>
+<li>初見がゼロから56日で農場をどこまで大きくできるか【Stardew Valley】</li>
+<li>何もない荒れ地を56日で巨大農場にする【ゆっくり実況】</li>
+<li>初見プレイで所持金500Gから○○万Gを目指す【スターデューバレー】</li>
+</ol>
+<p>参考例の指摘: タイトルは短く、何をしたか分かるように。ゲーム名は後ろでよい。検索はカタカナ表記（スターデューバレー）が多い。</p>
+<h2 id="d-videos-candidates-stardew-idea--サムネ案">サムネ案</h2>
+<ul>
+<li><strong>一目で「このチャンネルの動画」と分かる型を最優先</strong>（キャラの立ち絵の位置・色・フォントを固定。2本目以降も同じ型）</li>
+<li>その上で Before（荒れ地）→ After（巨大な畑）を左右に並べ、数字を1つだけ大きく</li>
+</ul>
+<h2 id="d-videos-candidates-stardew-idea--撮影前チェックg0">撮影前チェック（G0）</h2>
+<ul>
+<li>[ ] 同じゲームのゆっくり実況10本の確認（最近の伸び・切り口の被り）</li>
+<li>[ ] 試しプレイ（2〜3日分）でゲーム内1日の実時間を測る</li>
+<li>[ ] 目標の数字を決める</li>
+<li>[ ] チャンネルのキャラ・サムネとテロップの型を決める</li>
+<li>[ ] 仮説を <a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> に書く</li>
+</ul>
+</article>
+<article id="d-videos-candidates-stardew-postmortem" hidden><div class="src">videos/_candidates/stardew/postmortem.md</div>
+<h1 id="d-videos-candidates-stardew-postmortem--001-事後分析公開後に記入">001 事後分析（公開後に記入）</h1>
+<p>公開日: ＿＿＿＿ ／ 制作総時間: プレイ＿h・編集＿h</p>
+<h2 id="d-videos-candidates-stardew-postmortem--仮説の確認experimentshypothesesmd-と対応">仮説の確認（<a class="doclink" href="#d-experiments-hypotheses"><code>experiments/HYPOTHESES.md</code></a> と対応）</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>仮説</th>
+<th>結果</th>
+<th>正しかったか</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-candidates-stardew-postmortem--数値">数値</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>指標</th>
+<th>24h</th>
+<th>7日</th>
+<th>30日</th>
+<th>90日</th>
+<th>180日</th>
+<th>365日</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>再生数</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>インプレッション</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CTR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>30秒維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10分維持率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴時間</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>平均視聴率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>新規／リピーター</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>登録率・高評価率・コメント率</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>流入元（ホーム・関連・検索・ブラウジング）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>他の動画を視聴した視聴者（002など）</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="d-videos-candidates-stardew-postmortem--学び次への反映">学び・次への反映</h2>
+<ul>
+<li></li>
+</ul>
+</article>
+</main>
+<script>
+(() => {
+  const articles = [...document.querySelectorAll('article')];
+  const links = [...document.querySelectorAll('nav li a')];
+  function show() {
+    const hash = decodeURIComponent(location.hash.slice(1));
+    const el = hash && document.getElementById(hash);
+    const art = (el && el.closest('article')) || articles[0];
+    articles.forEach((a) => { a.hidden = a !== art; });
+    links.forEach((l) => l.classList.toggle('active', l.dataset.doc === art.id));
+    const t = art.querySelector('h1')?.textContent || '';
+    document.title = t + ' | ゆっくり実況 戦略ノート';
+    document.querySelector('.menu-btn .cur').textContent = t;
+    if (el && el !== art) el.scrollIntoView(); else window.scrollTo(0, 0);
+    document.body.classList.remove('menu-open');
+  }
+  window.addEventListener('hashchange', show);
+  show();
+  document.querySelector('.menu-btn').addEventListener('click', () => document.body.classList.toggle('menu-open'));
+  document.querySelector('nav input').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    links.forEach((l) => { l.parentElement.hidden = q && !l.textContent.toLowerCase().includes(q); });
+    if (q) document.querySelectorAll('nav details').forEach((d) => { d.open = true; });
+  });
+})();
+</script>
+</body>
+</html>

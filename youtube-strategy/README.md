@@ -19,6 +19,7 @@
 2. `docs/LONG_TERM_STRATEGY.md` — **計画 v3**（シリーズの型・最初の100日・判断ゲート・4本目以降）
 3. `videos/001-cities2/` — 1本目の企画書（候補は `videos/_candidates/`、v1 は `videos/_archive-v1/`）
 4. `research/GAME_CANDIDATES.md` — ゲームごとの判定（やる / テストする / 今はやらない）
+5. `docs/ORIGINALITY.md` — **パクリ防止ルール**（使用禁止リスト・公開前チェック）
 
 ## ディレクトリ
 
